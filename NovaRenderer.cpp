@@ -5,13 +5,7 @@
 
 int main() {
 
-    std::string file;
-
-    file = LoadFileAsString("bin/Shaders/simple.frag");
-
-    std::cout << file;
-
-    /*Application* app = new Application();
+    Application* app = new Application();
 
     if (app->Initialise()) {
         while (app->Update()) {
@@ -21,6 +15,6 @@ int main() {
     }
     
     delete app;
-    */
+    
     return 0;
 }

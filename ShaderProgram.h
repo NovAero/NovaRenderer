@@ -13,6 +13,8 @@ public:
 	ShaderProgram(const ShaderProgram& other) = delete;
 	ShaderProgram& operator=(const ShaderProgram& other) = delete;
 
+	void Use();
+	void SetFloatUnifrom(std::string varName, float value);
 
 private:
 	GLuint shaderProgram = 0;

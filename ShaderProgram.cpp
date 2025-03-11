@@ -54,3 +54,21 @@ ShaderProgram::ShaderProgram(std::string fragFilePath, std::string vertFilePath)
 
 	}
 }
+
+ShaderProgram::~ShaderProgram()
+{
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+	glDeleteProgram(shaderProgram);
+}
+
+void ShaderProgram::Use()
+{
+	glUseProgram(shaderProgram);
+}
+
+void ShaderProgram::SetFloatUnifrom(std::string varName, float value)
+{
+	GLint varLoc = glGetUniformLocation(shaderProgram, varName.c_str());
+	glUniform1f(varLoc, value);
+}

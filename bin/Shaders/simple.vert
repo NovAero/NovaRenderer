@@ -1,9 +1,14 @@
-#version 410
+#version 460
 
-layout( location = 0 ) in vec4 Position;
+layout( location = 0 ) in vec4 vertPos;
 
-uniform mat4 ProjectionViewModel;
+uniform float aspectRatio;
+
+out vec3 colour;
 
 void main() {
-      gl_Position = ProjectionViewModel * Position;
+      colour = 1.0 - vertPos;
+      vec3 transformedPos = vertPos;
+      transformedPos.x /= aspectRatio;
+      gl_Position = vec4(transformedPos * -0.5, 1.0);
 }
