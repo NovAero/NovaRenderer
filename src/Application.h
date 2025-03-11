@@ -18,17 +18,14 @@ const int windowHeight = 720;
 
 class Application {
 public:
-
 	bool Initialise();
 	bool Run();
 	void Draw();
 	void Exit();
 
 protected:
-
 	glm::mat4 view;
 	glm::mat4 projection;
 
 	GLFWwindow* window;
-
 };
