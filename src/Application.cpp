@@ -20,8 +20,6 @@ bool Application::Initialise()
         return false;
     }
 
-    // the rest of our code goes here!
-
     glClearColor(0.25f, 0.25f, 0.25f, 1);
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
 
