@@ -1,9 +1,10 @@
 #pragma once
 
-#include "glad.h"
-#include <GLFW/glfw3.h>
+#include "Graphics.h"
 
 #include "Gizmos.h"
+#include "Mesh.h"
+
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -18,14 +19,17 @@ const int windowHeight = 720;
 
 class Application {
 public:
-	bool Initialise();
-	bool Run();
-	void Draw();
-	void Exit();
+	virtual bool Initialise();
+	virtual bool Update();
+	virtual void Draw();
+	virtual void Exit();
+
+	const int GetWindowWidth() const { return windowWidth; }
+	const int GetWindowHeight() const { return windowHeight; }
 
 protected:
-	glm::mat4 view;
-	glm::mat4 projection;
+	glm::mat4 m_view;
+	glm::mat4 m_projection;
 
 	GLFWwindow* window;
 };

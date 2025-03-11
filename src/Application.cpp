@@ -26,13 +26,13 @@ bool Application::Initialise()
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
 
     Gizmos::create(10000, 10000, 0, 0);
-    view = glm::lookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
-    projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
+    m_view = glm::lookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
+    m_projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
 
     return true;
 }
 
-bool Application::Run()
+bool Application::Update()
 {
     if (glfwWindowShouldClose(window) == false && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS) {
         return true;
@@ -63,7 +63,7 @@ void Application::Draw()
             i == 10 ? yellow : black);
     }
 
-    Gizmos::draw(projection * view);
+    Gizmos::draw(m_projection * m_view);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

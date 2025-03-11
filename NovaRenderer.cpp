@@ -1,18 +1,26 @@
 
 #include "Application.h"
+#include "Utilities.h"
+#include <iostream>
 
 int main() {
 
-    Application* app = new Application();
+    std::string file;
 
-    if (app->Initialise() == true) {
-        while (app->Run() == true) {
+    file = LoadFileAsString("bin/Shaders/simple.frag");
+
+    std::cout << file;
+
+    /*Application* app = new Application();
+
+    if (app->Initialise()) {
+        while (app->Update()) {
             app->Draw();
         }
-        app->Exit();
+        app->Exit(); 
     }
     
     delete app;
-    
+    */
     return 0;
 }

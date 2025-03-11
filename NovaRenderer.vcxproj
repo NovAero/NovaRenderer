@@ -130,15 +130,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="NovaRenderer.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Gizmos.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Graphics.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="Utilities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Shaders\simple.frag" />
+    <None Include="bin\Shaders\simple.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
