@@ -14,11 +14,11 @@ public:
 	ShaderProgram& operator=(const ShaderProgram& other) = delete;
 
 	void Use();
-	void SetFloatUnifrom(std::string varName, float value);
+	void SetFloatUniform(std::string varName, float value);
 
 private:
 	GLuint shaderProgram = 0;
-	
+
 	GLuint fragmentShader = 0;
 	GLuint vertexShader = 0;
 };

@@ -1,25 +1,27 @@
 #include "ShaderProgram.h"
-#include <iostream>
 #include "Utilities.h"
+#include <iostream>
 
 ShaderProgram::ShaderProgram(std::string fragFilePath, std::string vertFilePath)
 {
-	bool foundProblem = false;
-
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	shaderProgram = glCreateProgram();
 
-	std::string vertexSource = LoadFileAsString(vertFilePath);
-	std::string fragmentSouce = LoadFileAsString(fragFilePath);
+	bool foundProblem = false;
 
-	if (vertexSource == "" || fragmentSouce == "") {
-		std::cout << "Failed to open one or more shader files\n";
-		std::cout << "Is your working directory set up properly?\n";
+	std::string vertexSource = LoadFileAsString(vertFilePath);
+	std::string fragmentSource = LoadFileAsString(fragFilePath);
+
+	if (vertexSource == "" || fragmentSource == "")
+	{
+		std::cout << "Failed to open one or more shader source files.\n";
+		std::cout << "Is your working directory set up correctly?\n";
 		foundProblem = true;
 	}
-	else {
+	else
+	{
 		const char* vertexSourceC = vertexSource.c_str();
 
 		glShaderSource(vertexShader, 1, &vertexSourceC, nullptr);
@@ -28,14 +30,34 @@ ShaderProgram::ShaderProgram(std::string fragFilePath, std::string vertFilePath)
 		GLchar errorLog[512];
 		GLint success = 0;
 		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-		if (!success) {
-			foundProblem = true;
+		if (!success)
+		{
 			std::cout << "Something went wrong with the vertex shader!\n";
 			glGetShaderInfoLog(vertexShader, 512, nullptr, errorLog);
 			std::cout << errorLog << '\n';
+			foundProblem = true;
 		}
-		else {
-			std::cout << "\"" << fragFilePath << "\"" << " compiled successfully\n";
+		else
+		{
+			std::cout << "Vertex shader \"" << vertFilePath << "\" loaded successfuly!\n";
+		}
+		const char* fragmentSourceC = fragmentSource.c_str();
+
+		glShaderSource(fragmentShader, 1, &fragmentSourceC, nullptr);
+		glCompileShader(fragmentShader);
+
+		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			//Something failed with the fragment shader compilation
+			std::cout << "Fragment shader " << fragFilePath << " failed with error:\n";
+			glGetShaderInfoLog(fragmentShader, 512, nullptr, errorLog);
+			std::cout << errorLog << '\n';
+			foundProblem = true;
+		}
+		else
+		{
+			std::cout << "\"" << fragFilePath << "\" compiled successfully.\n";
 		}
 
 		glAttachShader(shaderProgram, vertexShader);
@@ -43,15 +65,27 @@ ShaderProgram::ShaderProgram(std::string fragFilePath, std::string vertFilePath)
 
 		glLinkProgram(shaderProgram);
 		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-		if (!success) {
+		if (!success)
+		{
+			std::cout << "Error linking the shaders.\n";
+			glGetProgramInfoLog(shaderProgram, 512, nullptr, errorLog);
+			std::cout << errorLog << '\n';
 			foundProblem = true;
-			std::cout << "Error linking shaders\n";
-			glGetShaderInfoLog(shaderProgram, 512, nullptr, errorLog);
+		}
+		else
+		{
+			std::cout << "The shaders linked properly\n";
 		}
 	}
 
-	if (foundProblem) {
-
+	if (foundProblem)
+	{
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		glDeleteProgram(shaderProgram);
+		vertexShader = 0;
+		fragmentShader = 0;
+		shaderProgram = 0;
 	}
 }
 
@@ -67,7 +101,7 @@ void ShaderProgram::Use()
 	glUseProgram(shaderProgram);
 }
 
-void ShaderProgram::SetFloatUnifrom(std::string varName, float value)
+void ShaderProgram::SetFloatUniform(std::string varName, float value)
 {
 	GLint varLoc = glGetUniformLocation(shaderProgram, varName.c_str());
 	glUniform1f(varLoc, value);

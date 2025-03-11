@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include <vector>
+
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -16,6 +18,8 @@ using aie::Gizmos;
 
 const int windowWidth = 1280;
 const int windowHeight = 720;
+
+class ShaderProgram;
 
 class Application {
 public:
@@ -30,6 +34,15 @@ public:
 protected:
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
+
+	ShaderProgram* testShader;
+	GLuint vertexBufferID = 0;
+
+	std::vector<float> someFloats{
+		0, 0, 0,
+		0, 1, 0,
+		1, 0, 0,
+	};
 
 	GLFWwindow* window;
 };

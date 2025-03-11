@@ -15,6 +15,8 @@ std::string LoadFileAsString(std::string filePath)
 		file.close();
 		return output.str();
 	}
+	else {
 
-	return "";
+		return "";
+	}
 }
