@@ -24,6 +24,7 @@ public:
 	void BindUniform(std::string name, const glm::vec3& value);
 	void BindUniform(std::string name, const glm::vec4& value);
 	void BindUniform(std::string name, const glm::mat4& value);
+	void BindUniform(std::string name, const glm::mat3& value);
 
 private:
 	GLuint shaderProgram = 0;

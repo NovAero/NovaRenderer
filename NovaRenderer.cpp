@@ -13,7 +13,7 @@ int main() {
         }
         app->Exit(); 
     }
-    
+
     delete app;
     
     return 0;

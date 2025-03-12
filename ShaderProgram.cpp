@@ -130,3 +130,9 @@ void ShaderProgram::BindUniform(std::string name, const glm::mat4& value)
 	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
 	glUniformMatrix4fv(varLoc, 1, false, &value[0][0]);
 }
+
+void ShaderProgram::BindUniform(std::string name, const glm::mat3& value)
+{
+	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
+	glUniformMatrix3fv(varLoc, 1, false, &value[0][0]);
+}
