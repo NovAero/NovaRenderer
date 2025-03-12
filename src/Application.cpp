@@ -20,12 +20,21 @@ bool Application::Initialise()
         return false;
     }
     
-
     testShader = new ShaderProgram("bin/Shaders/simple.frag", "bin/Shaders/simple.vert");
 
     testShader->Use();
 
-    mesh.InitialiseQuad();
+    Mesh::Vertex verts[6];
+    verts[0].position = { -0.5f, 0.f, 0.f, 1 };
+    verts[1].position = { 0.f, 0.f, -0.5f, 1 };
+    verts[2].position = { 0.0f, 0.f, 0.5f, 1 };
+    verts[3].position = { 0.5f, 0.f,0.0f, 1 };
+    verts[4].position = { 0.5f, 0.5f, 0.f, 1 };
+    verts[5].position = { 0.f, 0.5f, 0.5f, 1 };
+
+    unsigned int indices[12] = { 0,1,2,2,1,3,3,4,2,1,3,4};
+
+    mesh.Initialise(6, verts, 12, indices);
 
     // make the quad 10 units wide
     m_quadTransform = {
@@ -33,6 +42,7 @@ bool Application::Initialise()
           0,10,0,0,
           0,0,10,0,
           0,0,0,1 };
+
 
     glClearColor(0.25f, 0.25f, 0.25f, 1);
 
