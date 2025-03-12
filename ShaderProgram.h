@@ -3,6 +3,9 @@
 #include "Graphics.h"
 #include <string>
 
+#include <glm/glm.hpp>
+
+
 class ShaderProgram {
 public:
 	ShaderProgram() {}
@@ -14,7 +17,13 @@ public:
 	ShaderProgram& operator=(const ShaderProgram& other) = delete;
 
 	void Use();
-	void SetFloatUniform(std::string varName, float value);
+
+	//Uniform binds
+	void BindUniform(std::string name, float value);
+	void BindUniform(std::string name, int value);
+	void BindUniform(std::string name, glm::vec3 value);
+	void BindUniform(std::string name, glm::vec4 value);
+	void BindUniform(std::string name, glm::mat4 value);
 
 private:
 	GLuint shaderProgram = 0;
@@ -22,3 +31,4 @@ private:
 	GLuint fragmentShader = 0;
 	GLuint vertexShader = 0;
 };
+

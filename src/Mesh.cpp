@@ -58,5 +58,4 @@ void Mesh::Draw()
 	else {
 		glDrawArrays(GL_TRIANGLES, 0, 3 * triCount);
 	}
-
 }

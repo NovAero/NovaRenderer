@@ -101,8 +101,32 @@ void ShaderProgram::Use()
 	glUseProgram(shaderProgram);
 }
 
-void ShaderProgram::SetFloatUniform(std::string varName, float value)
+void ShaderProgram::BindUniform(std::string name, float value)
 {
-	GLint varLoc = glGetUniformLocation(shaderProgram, varName.c_str());
+	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
 	glUniform1f(varLoc, value);
+}
+
+void ShaderProgram::BindUniform(std::string name, int value)
+{
+	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
+	glUniform1i(varLoc, value);
+}
+
+void ShaderProgram::BindUniform(std::string name, glm::vec3 value)
+{
+	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
+	glUniform3f(varLoc, value.x, value.y, value.z);
+}
+
+void ShaderProgram::BindUniform(std::string name, glm::vec4 value)
+{
+	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
+	glUniform4f(varLoc, value.x, value.y, value.z, value.w);
+}
+
+void ShaderProgram::BindUniform(std::string name, glm::mat4 value)
+{
+	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
+	glUniformMatrix4fv(varLoc, 1, false, &value[0][0]);
 }

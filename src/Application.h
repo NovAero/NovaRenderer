@@ -4,6 +4,7 @@
 
 #include "Gizmos.h"
 #include "Mesh.h"
+#include "ShaderProgram.h"
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -19,8 +20,6 @@ using aie::Gizmos;
 const int windowWidth = 1280;
 const int windowHeight = 720;
 
-class ShaderProgram;
-
 class Application {
 public:
 	virtual bool Initialise();
@@ -35,14 +34,11 @@ protected:
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
 
+	Mesh mesh;
+	glm::mat4 m_quadTransform;
+
 	ShaderProgram* testShader;
 	GLuint vertexBufferID = 0;
-
-	std::vector<float> someFloats{
-		0, 0, 0,
-		0, 1, 0,
-		1, 0, 0,
-	};
 
 	GLFWwindow* window;
 };
