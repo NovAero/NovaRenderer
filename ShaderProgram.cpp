@@ -113,19 +113,19 @@ void ShaderProgram::BindUniform(std::string name, int value)
 	glUniform1i(varLoc, value);
 }
 
-void ShaderProgram::BindUniform(std::string name, glm::vec3 value)
+void ShaderProgram::BindUniform(std::string name, const glm::vec3& value)
 {
 	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
 	glUniform3f(varLoc, value.x, value.y, value.z);
 }
 
-void ShaderProgram::BindUniform(std::string name, glm::vec4 value)
+void ShaderProgram::BindUniform(std::string name, const glm::vec4& value)
 {
 	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
 	glUniform4f(varLoc, value.x, value.y, value.z, value.w);
 }
 
-void ShaderProgram::BindUniform(std::string name, glm::mat4 value)
+void ShaderProgram::BindUniform(std::string name, const glm::mat4& value)
 {
 	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
 	glUniformMatrix4fv(varLoc, 1, false, &value[0][0]);
