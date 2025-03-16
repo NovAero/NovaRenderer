@@ -16,6 +16,8 @@ public:
 	void Initialise(unsigned int vCount, const Vertex* verts, unsigned int iCount, unsigned int* indices = nullptr);
 	void InitialiseQuad();
 
+	void InitialiseFromFile(const char* fileName);
+
 	virtual void Draw();
 
 protected:
