@@ -71,7 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\s240620\source\repos\NovaRenderer\dep\assimp\out\build\x64-Release\include;C:\Users\s240620\source\repos\NovaRenderer\dep\assimp\out\build\x64-Debug\include;C:\Users\s240620\source\repos\NovaRenderer\dep\assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\dep\assimp\out\build\x64-Release\include;$(SolutionDir)\dep\assimp\out\build\x64-Debug\include;$(SolutionDir)\dep\assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\dep\assimp\out\build\x64-Release\lib;$(SolutionDir)\dep\assimp\out\build\x64-Debug\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
