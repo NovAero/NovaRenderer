@@ -20,9 +20,13 @@ bool Application::Initialise()
         return false;
     }
     
+    meshes.push_back(Mesh());
+
     testShader = new ShaderProgram("bin/Shaders/simple.frag", "bin/Shaders/simple.vert");
 
     testShader->Use();
+
+    testShader->BindUniform("faceColour", glm::vec4(1));
 
     Mesh::Vertex verts[6];
     verts[0].position = { -0.5f, 0.f, 0.f, 1 };
@@ -34,7 +38,7 @@ bool Application::Initialise()
 
     unsigned int indices[12] = { 0,1,2,2,1,3,3,4,2,1,3,4};
 
-    mesh.Initialise(6, verts, 12, indices);
+    meshes[0].Initialise(6, verts, 12, indices);
 
     // make the quad 10 units wide
     m_quadTransform = {
@@ -98,7 +102,7 @@ void Application::Draw()
     testShader->BindUniform("ProjectionViewModel", pvm);
 
     //Draw quad
-    mesh.Draw();
+    meshes[0].Draw();
 
     glfwSwapBuffers(window);
     glfwPollEvents();

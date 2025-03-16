@@ -34,7 +34,7 @@ protected:
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
 
-	Mesh mesh;
+	std::vector<Mesh> meshes;
 	glm::mat4 m_quadTransform;
 
 	ShaderProgram* testShader;
