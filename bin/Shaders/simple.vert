@@ -1,6 +1,6 @@
 #version 460
 
-layout( location = 0 ) in vec4 Position;
+layout( location = 0 ) in vec3 position;
 
 uniform vec4 faceColour;
 uniform mat4 ProjectionViewModel;
@@ -8,6 +8,9 @@ uniform mat4 ProjectionViewModel;
 out vec4 colour;
 
 void main() {
-      colour = faceColour * Position + 0.5;
-      gl_Position = ProjectionViewModel * Position;
+      vec4 posVec4 = vec4(position, 1);
+
+      colour = faceColour * posVec4;
+
+      gl_Position = ProjectionViewModel * posVec4;
 }

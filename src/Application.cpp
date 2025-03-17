@@ -24,32 +24,22 @@ bool Application::Initialise()
 
     testShader->Use();
 
-    testShader->BindUniform("faceColour", glm::vec4(1));
+    testShader->BindUniform("faceColour", glm::vec4(1,0,0,1));
 
-   /* Mesh::Vertex verts[6];
-    verts[0].position = { -0.5f, 0.f, 0.f, 1 };
-    verts[1].position = { 0.f, 0.f, -0.5f, 1 };
-    verts[2].position = { 0.0f, 0.f, 0.5f, 1 };
-    verts[3].position = { 0.5f, 0.f,0.0f, 1 };
-    verts[4].position = { 0.5f, 0.5f, 0.f, 1 };
-    verts[5].position = { 0.f, 0.5f, 0.5f, 1 };
-
-    unsigned int indices[12] = { 0,1,2,2,1,3,3,4,2,1,3,4};*/
-
-    mesh.InitialiseFromFile("spider_out.obj");
+    compoundMesh.InitialiseFromFile("spider.obj");
 
     // make the quad 10 units wide
     m_quadTransform = {
-          0.5,0,0,0,
-          0,0.5,0,0,
-          0,0,0.5,0,
-          0,0,0,1 };
+          1,0,0,0,
+          0,1,0,0,
+          0,0,1,0,
+          0,0,0,5 };
 
     glClearColor(0.25f, 0.25f, 0.25f, 1);
 
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
 
-    glm::vec3 camPos{ -50, 20, 50 };
+    glm::vec3 camPos{ -50, 50 ,50};
 
     Gizmos::create(10000, 10000, 0, 0);
     m_view = glm::lookAt(camPos, vec3(0), vec3(0, 1, 0));
@@ -98,8 +88,8 @@ void Application::Draw()
     auto pvm = m_projection * m_view * m_quadTransform;
     testShader->BindUniform("ProjectionViewModel", pvm);
 
-    //Draw quad
-    mesh.Draw();
+    //Draw mesh
+    compoundMesh.Draw();
 
     glfwSwapBuffers(window);
     glfwPollEvents();

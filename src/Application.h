@@ -3,7 +3,7 @@
 #include "Graphics.h"
 
 #include "Gizmos.h"
-#include "Mesh.h"
+#include "MeshContainer.h"
 #include "ShaderProgram.h"
 
 #include <glm/glm.hpp>
@@ -34,7 +34,8 @@ protected:
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
 
-	Mesh mesh;
+	MeshContainer compoundMesh;
+	
 	glm::mat4 m_quadTransform;
 
 	ShaderProgram* testShader;
