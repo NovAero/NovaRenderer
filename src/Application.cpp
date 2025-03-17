@@ -25,15 +25,17 @@ bool Application::Initialise()
     testShader->Use();
 
     testShader->BindUniform("faceColour", glm::vec4(1,0,0,1));
+    
+    meshes.push_back(new MeshContainer());
 
-    compoundMesh.InitialiseFromFile("spider.obj");
+    meshes[0]->InitialiseFromFile("spider.obj");
 
-    // make the quad 10 units wide
+    // mesh test matrix
     m_quadTransform = {
           1,0,0,0,
           0,1,0,0,
           0,0,1,0,
-          0,0,0,5 };
+          0,0,0,10 };
 
     glClearColor(0.25f, 0.25f, 0.25f, 1);
 
@@ -85,11 +87,15 @@ void Application::Draw()
     testShader->Use();
 
     // bind transform
-    auto pvm = m_projection * m_view * m_quadTransform;
+    glm::mat4 transform = glm::rotate(m_quadTransform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+    m_view = glm::lookAt(glm::vec3(5, 5, 5), glm::vec3(0, 3, 0), glm::vec3(0, 1, 0));
+    m_projection = glm::perspective(3.14159f / 2.0f, 1.7778f, 0.3f, 50.0f);
+
+    auto pvm = m_projection * m_view * transform;
     testShader->BindUniform("ProjectionViewModel", pvm);
 
     //Draw mesh
-    compoundMesh.Draw();
+    meshes[0]->Draw();
 
     glfwSwapBuffers(window);
     glfwPollEvents();

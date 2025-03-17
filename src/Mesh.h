@@ -10,7 +10,7 @@ public:
 		glm::vec2 texCoord;
 	};
 	
-	Mesh() : triCount(0), vao(0), vbo(0), ibo(0) {}
+	Mesh() : triCount(0), vao(0), vbo(0), ibo(0), indexCount(0) {}
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 	virtual ~Mesh();
 

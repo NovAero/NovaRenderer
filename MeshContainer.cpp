@@ -44,7 +44,7 @@ void MeshContainer::InitialiseFromFile(const char* filePath)
 			vert.position.y = mesh->mVertices[vx_ix].y;
 			vert.position.z = mesh->mVertices[vx_ix].z;
 
-			if (mesh->mNormals) { //if there are normals included in the mesh
+			if (mesh->HasNormals()) { //if there are normals included in the mesh
 				vert.normal.x = mesh->mNormals[vx_ix].x;
 				vert.normal.y = mesh->mNormals[vx_ix].y;
 				vert.normal.z = mesh->mNormals[vx_ix].z;
