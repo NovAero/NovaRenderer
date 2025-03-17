@@ -20,7 +20,7 @@ bool Application::Initialise()
         return false;
     }
     
-    testShader = new ShaderProgram("bin/Shaders/simple.frag", "bin/Shaders/simple.vert");
+    testShader = new ShaderProgram("simple.frag", "simple.vert");
 
     testShader->Use();
 
@@ -31,7 +31,7 @@ bool Application::Initialise()
     meshes[0]->InitialiseFromFile("spider.obj");
 
     // mesh test matrix
-    m_quadTransform = {
+    m_meshTransform = {
           1,0,0,0,
           0,1,0,0,
           0,0,1,0,
@@ -62,7 +62,7 @@ bool Application::Update()
 
 void Application::Draw()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
 
     Gizmos::clear();
 
@@ -87,9 +87,9 @@ void Application::Draw()
     testShader->Use();
 
     // bind transform
-    glm::mat4 transform = glm::rotate(m_quadTransform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 transform = glm::rotate(m_meshTransform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
     m_view = glm::lookAt(glm::vec3(5, 5, 5), glm::vec3(0, 3, 0), glm::vec3(0, 1, 0));
-    m_projection = glm::perspective(3.14159f / 2.0f, 1.7778f, 0.3f, 50.0f);
+    m_projection = glm::perspective(3.14159f / 2.f, 1.7778f, 0.3f, 50.0f);
 
     auto pvm = m_projection * m_view * transform;
     testShader->BindUniform("ProjectionViewModel", pvm);

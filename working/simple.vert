@@ -10,7 +10,7 @@ out vec4 colour;
 void main() {
       vec4 posVec4 = vec4(position, 1);
 
-      colour = faceColour;
+      colour = faceColour * vec4(position, 1) * 0.5;
 
       gl_Position = ProjectionViewModel * posVec4;
 }

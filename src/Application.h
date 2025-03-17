@@ -36,7 +36,7 @@ protected:
 
 	std::vector<MeshContainer*> meshes;
 
-	glm::mat4 m_quadTransform;
+	glm::mat4 m_meshTransform;
 
 	ShaderProgram* testShader;
 	GLuint vertexBufferID = 0;

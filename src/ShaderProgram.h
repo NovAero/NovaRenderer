@@ -32,4 +32,3 @@ private:
 	GLuint fragmentShader = 0;
 	GLuint vertexShader = 0;
 };
-

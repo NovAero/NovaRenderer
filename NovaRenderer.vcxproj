@@ -73,6 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)\dep\assimp\out\build\x64-Debug\include;$(SolutionDir)\dep\assimp\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\dep\assimp\out\build\x64-Debug\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(VC_SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(SolutionDir)\dep\assimp\out\build\x64-Release\lib;$(LibraryPath)</LibraryPath>
@@ -141,27 +142,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MeshContainer.cpp" />
-    <ClCompile Include="NovaRenderer.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Gizmos.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="src\MeshContainer.cpp" />
+    <ClCompile Include="src\NovaRenderer.cpp" />
+    <ClCompile Include="src\ShaderProgram.cpp" />
+    <ClCompile Include="src\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="MeshContainer.h" />
-    <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Gizmos.h" />
+    <ClInclude Include="src\glad.h" />
     <ClInclude Include="src\Graphics.h" />
+    <ClInclude Include="src\khrplatform.h" />
+    <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="Utilities.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bin\Shaders\simple.frag" />
-    <None Include="bin\Shaders\simple.vert" />
+    <ClInclude Include="src\MeshContainer.h" />
+    <ClInclude Include="src\ShaderProgram.h" />
+    <ClInclude Include="src\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
