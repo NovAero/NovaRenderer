@@ -3,9 +3,6 @@
 
 struct Texture {
 
-
-	
-
 	glm::vec4** pixels;
 	unsigned int WIDTH, HEIGHT;
 };

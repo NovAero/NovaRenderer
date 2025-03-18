@@ -10,11 +10,12 @@ public:
 
 	void Update(float deltaTime, GLFWwindow* window);
 
+	void SetPosition(glm::vec3 pos);
+
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix(float w, float h);
 
 private:
-	
 	float m_theta = 0.f;
 	float m_phi = 0.f;
 	glm::vec3 m_pos;

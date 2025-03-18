@@ -28,9 +28,7 @@ bool Application::Initialise()
     m_camera = new Camera();
 
     testShader = new ShaderProgram("simple.frag", "simple.vert");
-
     testShader->Use();
-
     testShader->BindUniform("faceColour", glm::vec4(1,0,0,1));
     
 
@@ -43,7 +41,7 @@ bool Application::Initialise()
           0.1,0,0,0,
           0,0.1,0,0,
           0,0,0.1,0,
-          0,0,0,1 };
+          0, 0, 0,1};
 
     glClearColor(0.25f, 0.25f, 0.25f, 1);
 
@@ -55,7 +53,7 @@ bool Application::Initialise()
 
     glfwSetCursorPosCallback(window, &SetMousePosition);
 
-  //  m_view = glm::lookAt(camPos, vec3(0), vec3(0, 1, 0));
+   // m_view = glm::lookAt(camPos, vec3(0), vec3(0, 1, 0));
    // m_projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
 
     return true;
@@ -87,18 +85,16 @@ void Application::Draw()
         Gizmos::addLine(vec3(-10 + i, 0, 10),
             vec3(-10 + i, 0, -10),
             i == 10 ? yellow : black);
-
         Gizmos::addLine(vec3(10, 0, -10 + i),
             vec3(-10, 0, -10 + i),
             i == 10 ? yellow : black);
     }
-
     Gizmos::draw(pv);
 
-    //bind shader
+    //Bind shader
     testShader->Use();
 
-    //bind transform
+    //Bind transform
     glm::mat4 transform = glm::rotate(m_meshTransform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
     transform = glm::translate(transform, glm::vec3(0, 3, 0));
 

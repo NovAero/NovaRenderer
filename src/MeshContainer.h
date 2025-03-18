@@ -1,8 +1,9 @@
 #pragma once
-
 #include <vector>
 
 class Mesh;
+class ShaderProgram;
+class Texture;
 
 class MeshContainer {
 public:
@@ -18,6 +19,8 @@ private:
 
 private:
 
+	ShaderProgram* m_shader;
+	Texture* m_texture;
 	std::vector<Mesh*> m_children;
 
 };

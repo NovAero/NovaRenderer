@@ -30,6 +30,9 @@ void Camera::Update(float deltaTime, GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_A)) {
         m_pos -= right * deltaTime;
+    } 
+    if (glfwGetKey(window, GLFW_KEY_R)) {
+        SetPosition(glm::vec3(0, 10, 0));
     }
 
     glm::vec2 mouseDelta = Application::Get()->GetMouseDelta();
@@ -41,6 +44,11 @@ void Camera::Update(float deltaTime, GLFWwindow* window)
         m_theta += turnSpeed * mouseDelta.x;
         m_phi -= turnSpeed * mouseDelta.y;
     }
+}
+
+void Camera::SetPosition(glm::vec3 pos)
+{
+    m_pos = pos;
 }
 
 glm::mat4 Camera::GetViewMatrix()
