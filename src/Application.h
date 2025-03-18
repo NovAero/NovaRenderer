@@ -57,4 +57,11 @@ protected:
 	GLFWwindow* window;
 
 	static Application* s_instance;
+	
+	std::string windowName = "NovaRenderer";
+
+private:
+
+	bool GLFWStartup();
+
 };

@@ -5,26 +5,8 @@ Application* Application::s_instance = nullptr;
 
 bool Application::Initialise()
 {
-    if (glfwInit() == false)
-        return false;
+    if (!GLFWStartup()) return false;
 
-    window = glfwCreateWindow(windowWidth, windowHeight, "Nova Renderer", nullptr, nullptr);
-
-    if (window == nullptr) {
-        glfwTerminate();
-        return false;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    if (!gladLoadGL()) {
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        return false;
-
-    }
-
-    s_instance = this;
     m_camera = new Camera();
 
     testShader = new ShaderProgram("simple.frag", "simple.vert");
@@ -122,5 +104,26 @@ void Application::SetMousePosition(GLFWwindow* window, double x, double y)
 {
     s_instance->m_mousePosition.x = (float)x;
     s_instance->m_mousePosition.y = (float)y;
+}
+
+bool Application::GLFWStartup()
+{
+    if (glfwInit() == false)
+        return false;
+    window = glfwCreateWindow(windowWidth, windowHeight, windowName.c_str(), nullptr, nullptr);
+    if (window == nullptr) {
+        glfwTerminate();
+        return false;
+    }
+    glfwMakeContextCurrent(window);
+    if (!gladLoadGL()) {
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return false;
+
+    }
+    s_instance = this;
+
+    return true;
 }
 
