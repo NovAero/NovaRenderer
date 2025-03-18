@@ -1,4 +1,7 @@
 #include "Application.h"
+#include "Camera.h"
+
+Application* Application::s_instance = nullptr;
 
 bool Application::Initialise()
 {
@@ -18,24 +21,29 @@ bool Application::Initialise()
         glfwDestroyWindow(window);
         glfwTerminate();
         return false;
+
     }
-    
+
+    s_instance = this;
+    m_camera = new Camera();
+
     testShader = new ShaderProgram("simple.frag", "simple.vert");
 
     testShader->Use();
 
     testShader->BindUniform("faceColour", glm::vec4(1,0,0,1));
     
+
     meshes.push_back(new MeshContainer());
 
     meshes[0]->InitialiseFromFile("spider.obj");
 
     // mesh test matrix
     m_meshTransform = {
-          1,0,0,0,
-          0,1,0,0,
-          0,0,1,0,
-          0,0,0,10 };
+          0.1,0,0,0,
+          0,0.1,0,0,
+          0,0,0.1,0,
+          0,0,0,1 };
 
     glClearColor(0.25f, 0.25f, 0.25f, 1);
 
@@ -44,20 +52,22 @@ bool Application::Initialise()
     glm::vec3 camPos{ -50, 50 ,50};
 
     Gizmos::create(10000, 10000, 0, 0);
-    m_view = glm::lookAt(camPos, vec3(0), vec3(0, 1, 0));
-    m_projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
+
+    glfwSetCursorPosCallback(window, &SetMousePosition);
+
+  //  m_view = glm::lookAt(camPos, vec3(0), vec3(0, 1, 0));
+   // m_projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
 
     return true;
 }
 
 bool Application::Update()
 {
-    if (glfwWindowShouldClose(window) == false && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    m_camera->Update(0.1f, window);
+    m_lastMousePosition = m_mousePosition;
+
+    return glfwWindowShouldClose(window) == false &&
+        glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS;
 }
 
 void Application::Draw()
@@ -67,6 +77,8 @@ void Application::Draw()
     Gizmos::clear();
 
     Gizmos::addTransform(glm::mat4(1));
+
+    glm::mat4 pv = m_camera->GetProjectionMatrix(windowWidth, windowHeight) * m_camera->GetViewMatrix();
 
     vec4 yellow(1, 1, 0, 1);
     vec4 black(0, 0, 0, 1);
@@ -81,17 +93,16 @@ void Application::Draw()
             i == 10 ? yellow : black);
     }
 
-    Gizmos::draw(m_projection * m_view);
+    Gizmos::draw(pv);
 
     //bind shader
     testShader->Use();
 
-    // bind transform
+    //bind transform
     glm::mat4 transform = glm::rotate(m_meshTransform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-    m_view = glm::lookAt(glm::vec3(5, 5, 5), glm::vec3(0, 3, 0), glm::vec3(0, 1, 0));
-    m_projection = glm::perspective(3.14159f / 2.f, 1.7778f, 0.3f, 50.0f);
+    transform = glm::translate(transform, glm::vec3(0, 3, 0));
 
-    auto pvm = m_projection * m_view * transform;
+    auto pvm = pv * transform;
     testShader->BindUniform("ProjectionViewModel", pvm);
 
     //Draw mesh
@@ -110,3 +121,10 @@ void Application::Exit()
     glfwDestroyWindow(window);
     glfwTerminate();
 }
+
+void Application::SetMousePosition(GLFWwindow* window, double x, double y)
+{
+    s_instance->m_mousePosition.x = (float)x;
+    s_instance->m_mousePosition.y = (float)y;
+}
+
