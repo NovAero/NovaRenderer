@@ -1,27 +1,28 @@
 #pragma once
-#include <glm/glm.hpp>
 #include <vector>
 
-class Mesh {
+class Mesh;
+class ShaderProgram;
+class Texture;
+
+class MeshContainer {
 public:
-	struct Vertex {
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec2 texCoord;
-	};
+	MeshContainer();
+	~MeshContainer();
+
+	void InitialiseFromFile(const char* filePath);
 	
-	Mesh() : triCount(0), vao(0), vbo(0), ibo(0), indexCount(0) {}
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
-	virtual ~Mesh();
+	void WrapTexture(const char* textPath);
+	void Draw();
 
-	void Initialise(unsigned int vCount, const Vertex* verts, unsigned int iCount, unsigned int* indices = nullptr);
-	void InitialiseQuad();
+private:
+	
+	void AddMesh(Mesh* mesh);
 
-	virtual void Draw();
+private:
 
-protected:
+	ShaderProgram* m_shader;
+	Texture* m_texture;
+	std::vector<Mesh*> m_children;
 
-	unsigned int triCount;
-	unsigned int vao, vbo, ibo;
-	size_t indexCount;
 };

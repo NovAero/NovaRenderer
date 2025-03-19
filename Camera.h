@@ -19,4 +19,6 @@ private:
 	float m_theta = 0.f;
 	float m_phi = 0.f;
 	glm::vec3 m_pos;
+
+	float aspectRatio = 16.0f / 9.0f;
 };

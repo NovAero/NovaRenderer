@@ -1,16 +1,17 @@
 #include "Mesh.h"
 #include "glad.h"
 
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+{
+	Initialise(vertices.size(), vertices.data(), indices.size(), indices.data());
+}
+
 Mesh::~Mesh()
 {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 	glDeleteBuffers(1, &ibo);
-}
-
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
-{
-	Initialise(vertices.size(), vertices.data(), indices.size(), indices.data());
 }
 
 void Mesh::Initialise(unsigned int vCount, const Vertex* verts, unsigned int iCount, unsigned int* indices)

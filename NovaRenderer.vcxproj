@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\dep\assimp\out\build\x64-Debug\include;$(SolutionDir)\dep\assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dep\stb;$(SolutionDir)\dep\assimp\out\build\x64-Debug\include;$(SolutionDir)\dep\assimp\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\dep\assimp\out\build\x64-Debug\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(VC_SourcePath)</SourcePath>
   </PropertyGroup>
@@ -146,6 +146,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Gizmos.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshContainer.cpp" />
     <ClCompile Include="src\NovaRenderer.cpp" />

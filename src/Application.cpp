@@ -12,11 +12,11 @@ bool Application::Initialise()
     testShader = new ShaderProgram("simple.frag", "simple.vert");
     testShader->Use();
     testShader->BindUniform("faceColour", glm::vec4(1,0,0,1));
-    
 
     meshes.push_back(new MeshContainer());
 
     meshes[0]->InitialiseFromFile("spider.obj");
+    meshes[0]->WrapTexture("SpiderTex.jpg");
 
     // mesh test matrix
     m_meshTransform = {
@@ -81,7 +81,7 @@ void Application::Draw()
     transform = glm::translate(transform, glm::vec3(0, 3, 0));
 
     auto pvm = pv * transform;
-    testShader->BindUniform("ProjectionViewModel", pvm);
+    testShader->BindUniform("mvpMat", pvm);
 
     //Draw mesh
     meshes[0]->Draw();

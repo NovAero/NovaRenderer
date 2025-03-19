@@ -1,5 +1,7 @@
 #include "MeshContainer.h"
 #include "Mesh.h"
+#include "Material.h"
+#include "ShaderProgram.h"
 
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
@@ -8,7 +10,8 @@
 
 MeshContainer::MeshContainer()
 {
-
+	m_shader = new ShaderProgram("simple.frag", "simple.vert");
+	m_texture = nullptr;
 }
 
 MeshContainer::~MeshContainer()
@@ -29,7 +32,7 @@ void MeshContainer::InitialiseFromFile(const char* filePath)
 
 		//initialise std::vectors
 		std::vector<unsigned int> indices;
-		std::vector<Mesh::Vertex> vertices;
+		std::vector<Vertex> vertices;
 
 		//new mesh from scene 
 		auto mesh = scene->mMeshes[mesh_index];
@@ -38,7 +41,7 @@ void MeshContainer::InitialiseFromFile(const char* filePath)
 		for (unsigned int vx_ix = 0; vx_ix < mesh->mNumVertices; ++vx_ix) {
 
 			//Read the vertex data and add to vertex buffer
-			Mesh::Vertex vert{};
+			Vertex vert;
 
 			vert.position.x = mesh->mVertices[vx_ix].x;
 			vert.position.y = mesh->mVertices[vx_ix].y;
@@ -50,8 +53,8 @@ void MeshContainer::InitialiseFromFile(const char* filePath)
 				vert.normal.z = mesh->mNormals[vx_ix].z;
 			}
 
-			//vert.texCoord.x = mesh->mTextureCoords[0][vx_ix].x;
-			//vert.texCoord.y = mesh->mTextureCoords[0][vx_ix].y;
+			vert.texCoord.x = mesh->mTextureCoords[0][vx_ix].x;
+			vert.texCoord.y = mesh->mTextureCoords[0][vx_ix].y;
 			
 			vertices.push_back(vert);
 		}
@@ -68,6 +71,11 @@ void MeshContainer::InitialiseFromFile(const char* filePath)
 		
 		AddMesh(new Mesh(vertices, indices));
 	}
+}
+
+void MeshContainer::WrapTexture(const char* textPath)
+{
+	m_texture = new Texture(textPath, 250, 250, 3);
 }
 
 void MeshContainer::Draw()
