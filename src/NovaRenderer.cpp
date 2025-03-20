@@ -4,10 +4,17 @@
 #include <iostream>
 
 int main() {
+    //TODO
+    //Add callback function for OnWindowResize - refer to lessBadRenderer code
+    //Add object class that handles the texture loading for its mesh
+    //Add lighting
+
+    unsigned int width = 768;
+    unsigned int height = 768;
 
     Application* app = new Application();
 
-    if (app->Initialise()) {
+    if (app->Initialise(width, height)) {
         while (app->Update()) {
             app->Draw();
         }

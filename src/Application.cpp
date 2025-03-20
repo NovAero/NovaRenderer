@@ -4,9 +4,12 @@
 
 Application* Application::s_instance = nullptr;
 
-bool Application::Initialise()
+bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight)
 {
-    if (!GLFWStartup()) return false;
+    if (!GLFWStartup(windowWidth, windowHeight)) return false;
+
+    m_windowWidth = windowWidth;
+    m_windowHeight = windowHeight;
 
     //Asset loading
     testShader = new ShaderProgram("simple.frag", "simple.vert");
@@ -15,7 +18,7 @@ bool Application::Initialise()
     meshes[0]->LoadFromFile("spider.obj");
     
     Texture* tex = new Texture();
-    tex->LoadFromFile("Gerald.png");
+    tex->LoadFromFile("SpiderTex.jpg");
 
     //Set up rendering state
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
@@ -37,6 +40,7 @@ bool Application::Initialise()
 
     return true;
 }
+
 
 bool Application::Update()
 {
@@ -72,7 +76,7 @@ void Application::Exit()
     glfwTerminate();
 }
 
-bool Application::GLFWStartup()
+bool Application::GLFWStartup(unsigned int windowWidth, unsigned int windowHeight)
 {
     if (glfwInit() == false)
         return false;

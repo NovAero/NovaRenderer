@@ -20,19 +20,16 @@ using aie::Gizmos;
 
 class Camera;
 
-const int windowWidth = 1280;
-const int windowHeight = 720;
-
 class Application {
 public:
 
-	virtual bool Initialise();
+	virtual bool Initialise(unsigned int windowWidth, unsigned int windowHeight);
 	virtual bool Update();
 	virtual void Draw();
 	virtual void Exit();
 
-	const int GetWindowWidth() const { return windowWidth; }
-	const int GetWindowHeight() const { return windowHeight; }
+	const int GetWindowWidth() const { return m_windowWidth; }
+	const int GetWindowHeight() const { return m_windowHeight; }
 
 	static Application* Get() { return s_instance; }
 	
@@ -46,10 +43,11 @@ protected:
 	GLFWwindow* window;
 	std::string windowName = "NovaRenderer";
 
-	static Application* s_instance;
-
 private:
-
-	bool GLFWStartup();
-
+	bool GLFWStartup(unsigned int windowWidth, unsigned int windowHeight);
+	
+	static Application* s_instance;
+	
+	unsigned int m_windowWidth = 1280;
+	unsigned int m_windowHeight = 720;
 };
