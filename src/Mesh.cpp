@@ -1,111 +1,105 @@
 #include "Mesh.h"
-#include "glad.h"
+#include "Vertex.h"
+#include "MeshSegment.h"
+#include "Material.h"
+#include "ShaderProgram.h"
 
+#include <assimp/scene.h>
+#include <assimp/cimport.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
-{
-	Initialise(vertices.size(), vertices.data(), indices.size(), indices.data());
-}
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
 
 Mesh::~Mesh()
 {
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
-	glDeleteBuffers(1, &ibo);
-}
-
-void Mesh::Initialise(unsigned int vCount, const Vertex* verts, unsigned int iCount, unsigned int* indices)
-{
-	// generate buffers
-	glGenBuffers(1, &vbo);
-	glGenVertexArrays(1, &vao);
-
-	// bind vertex array aka a mesh wrapper
-	glBindVertexArray(vao);
-
-	// bind vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	// fill vertex buffer
-	glBufferData(GL_ARRAY_BUFFER, vCount * sizeof(Vertex), verts, GL_STATIC_DRAW);
-
-	// enable first element as position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
-	// bind indices if there are any
-	if (iCount != 0) {
-		glGenBuffers(1, &ibo);
-
-		// bind vertex buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-		// fill vertex buffer
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, iCount * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
-		triCount = iCount / 3;
-	}
-	else {
-		triCount = vCount / 3;
-	}
-
-	indexCount = iCount;
-
-	// unbind buffers
-	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }
 
-void Mesh::InitialiseQuad()
+void Mesh::Draw(glm::mat4 vpMatrix)
 {
-	// check that the mesh is not initialized already
-	assert(vao == 0);
+	for (MeshSegment* segment : m_segments) {
+		segment->Bind();
+		m_texture->Bind("albedoMap", m_shader);
 
-	// generate buffers
-	glGenBuffers(1, &vbo);
-	glGenVertexArrays(1, &vao);
+		glm::mat4 modelMat = glm::scale(glm::mat4(1), scale);
+		modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
+		modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
+		modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
 
-	// bind vertex array aka a mesh wrapper
-	glBindVertexArray(vao);
+		modelMat = glm::translate(modelMat, position);
 
-	// bind vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glm::mat4 mvpMat = vpMatrix * modelMat;
 
-	// define 6 vertices for 2 triangles
-	Vertex vertices[6];
-	vertices[0].position = { -0.5f, 0, 0.5f};
-	vertices[1].position = { 0.5f, 0, 0.5f};
-	vertices[2].position = { -0.5f, 0, -0.5f};
+		m_shader->BindUniform("mvpMat", mvpMat);
+		m_shader->BindUniform("modelMat", modelMat);
 
-	vertices[3].position = { -0.5f, 0, -0.5f};
-	vertices[4].position = { 0.5f, 0, 0.5f };
-	vertices[5].position = { 0.5f, 0, -0.5f};
-
-	// fill vertex buffer
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex), vertices, GL_STATIC_DRAW);
-
-	// enable first element as position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
-	// unbind buffers
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// quad has 2 triangles
-	triCount = 2;
+		segment->Draw();
+		segment->Unbind();
+	}
 }
 
-void Mesh::Draw()
+void Mesh::LoadFromFile(const char* filePath)
 {
-	glBindVertexArray(vao);
-	//using indices or just vertexes?
-	if (ibo != 0) {
-		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+	Assimp::Importer mesh_importer;
+
+	const aiScene* scene = mesh_importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+
+	if (!scene) return;
+
+	//read over each mesh and add them to the scene
+	for (unsigned int mesh_index = 0; mesh_index < scene->mNumMeshes; ++mesh_index) {
+
+		//initialise std::vectors
+		std::vector<unsigned int> indices;
+		std::vector<Vertex> vertices;
+
+		//new mesh from scene 
+		auto meshPointer = scene->mMeshes[mesh_index];
+
+		//vertices | position, normal, texture coord
+		for (unsigned int vx_ix = 0; vx_ix < meshPointer->mNumFaces; ++vx_ix) {
+
+			for (int vI = 0; vI < 3; ++vI) {
+
+				int index = meshPointer->mFaces[vx_ix].mIndices[vI];
+
+				//Read the vertex data and add to vertex buffer
+				Vertex vert;
+
+				vert.position.x = meshPointer->mVertices[index].x;
+				vert.position.y = meshPointer->mVertices[index].y;
+				vert.position.z = meshPointer->mVertices[index].z;
+
+				if (meshPointer->HasNormals()) { //if there are normals included in the mesh
+					vert.normal.x = meshPointer->mNormals[index].x;
+					vert.normal.y = meshPointer->mNormals[index].y;
+					vert.normal.z = meshPointer->mNormals[index].z;
+				}
+
+				vert.uv.x = meshPointer->mTextureCoords[0][index].x;
+				vert.uv.y = meshPointer->mTextureCoords[0][index].y;
+
+				vertices.push_back(vert);
+			}
+		}
+
+		for (unsigned int f_ix = 0; f_ix < meshPointer->mNumFaces; ++f_ix) {
+			//get new face
+			const auto& face = meshPointer->mFaces[f_ix];
+
+			//get all the face's index data and add it to the index buffer
+			for (unsigned int ix_ix = 0; ix_ix < face.mNumIndices; ++ix_ix) {
+				indices.push_back(face.mIndices[ix_ix]);
+			}
+		}
+		
+		AddSegment(new MeshSegment(vertices, indices));
 	}
-	else {
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-	}
+}
+
+void Mesh::AddSegment(MeshSegment* mesh)
+{
+	m_segments.push_back(mesh);
 }

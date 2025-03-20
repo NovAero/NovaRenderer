@@ -1,31 +1,28 @@
 #pragma once
-#include <glm/glm.hpp>
+
+#include "Graphics.h"
+#include "Vertex.h"
 #include <vector>
 
-struct Vertex {
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 texCoord;
-};
-
-class Mesh {
+class MeshSegment {
 public:
 	
-	Mesh() : triCount(0), vao(0), vbo(0), ibo(0), indexCount(0) {}
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
-	virtual ~Mesh();
+	MeshSegment() = default;
+	MeshSegment(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+	~MeshSegment();
 
-	Mesh(const Mesh& other) = delete;
-	Mesh& operator=(Mesh& other) = delete;
+	MeshSegment(const MeshSegment& other) = delete;
+	MeshSegment& operator=(MeshSegment& other) = delete;
 
-	void Initialise(unsigned int vCount, const Vertex* verts, unsigned int iCount, unsigned int* indices = nullptr);
-	void InitialiseQuad();
-
-	virtual void Draw();
+	void Bind();
+	void Unbind();
+	void Draw();
 
 protected:
 
-	unsigned int triCount;
-	unsigned int vao, vbo, ibo;
-	size_t indexCount;
+	void Initialise(unsigned int vCount, const Vertex* verts, unsigned int iCount, unsigned int* indices = nullptr);
+
+	GLuint vertexBufferID = 0;
+	int vertCount = 0;
+
 };

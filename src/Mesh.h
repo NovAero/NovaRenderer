@@ -1,28 +1,34 @@
 #pragma once
 #include <vector>
+#include "Graphics.h"
 
-class Mesh;
+class MeshSegment;
 class ShaderProgram;
 class Texture;
 
-class MeshContainer {
+class Mesh {
 public:
-	MeshContainer();
-	~MeshContainer();
+	Mesh() = default;
+	Mesh(const Mesh& other) = delete;
+	~Mesh();
 
-	void InitialiseFromFile(const char* filePath);
-	
-	void WrapTexture(const char* textPath);
-	void Draw();
+	Mesh& operator=(const Mesh& other) = delete;
 
-private:
-	
-	void AddMesh(Mesh* mesh);
+	void Draw(glm::mat4 vpMatrix);
+
+	void LoadFromFile(const char* filePath);
 
 private:
+	
+	void AddSegment(MeshSegment* mesh);
 
-	ShaderProgram* m_shader;
-	Texture* m_texture;
-	std::vector<Mesh*> m_children;
+public:
+	glm::vec3 position{ 0 };
+	glm::vec3 rotation{ 0 };
+	glm::vec3 scale{ 1 };
+
+	Texture* m_texture = nullptr;
+	ShaderProgram* m_shader = nullptr;
+	std::vector<MeshSegment*> m_segments;
 
 };

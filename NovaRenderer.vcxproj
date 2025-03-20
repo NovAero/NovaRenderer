@@ -147,8 +147,8 @@
     <ClCompile Include="src\Gizmos.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\MeshSegment.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\MeshContainer.cpp" />
     <ClCompile Include="src\NovaRenderer.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Utilities.cpp" />
@@ -161,10 +161,11 @@
     <ClInclude Include="src\Graphics.h" />
     <ClInclude Include="src\khrplatform.h" />
     <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\MeshSegment.h" />
     <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\MeshContainer.h" />
     <ClInclude Include="src\ShaderProgram.h" />
     <ClInclude Include="src\Utilities.h" />
+    <ClInclude Include="src\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="working\simple.frag" />

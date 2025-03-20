@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Camera.h"
+#include "Material.h"
 
 Application* Application::s_instance = nullptr;
 
@@ -7,36 +8,30 @@ bool Application::Initialise()
 {
     if (!GLFWStartup()) return false;
 
-    m_camera = new Camera();
-
+    //Asset loading
     testShader = new ShaderProgram("simple.frag", "simple.vert");
-    testShader->Use();
-    testShader->BindUniform("faceColour", glm::vec4(1,0,0,1));
 
-    meshes.push_back(new MeshContainer());
+    meshes.push_back(new Mesh());
+    meshes[0]->LoadFromFile("soulspear.obj");
+    Texture spiderTexture;
+    spiderTexture.LoadFromFile("Gerald.png");
 
-    meshes[0]->InitialiseFromFile("spider.obj");
-    meshes[0]->WrapTexture("SpiderTex.jpg");
-
-    // mesh test matrix
-    m_meshTransform = {
-          0.1,0,0,0,
-          0,0.1,0,0,
-          0,0,0.1,0,
-          0, 0, 0,1};
-
-    glClearColor(0.25f, 0.25f, 0.25f, 1);
-
+    //Set up rendering state
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
+    glClearColor(0.1f, 0.25f, 0.25f, 1);
+    testShader->Use();
 
-    glm::vec3 camPos{ -50, 50 ,50};
+    //Scene stuff , callbacks, camera pos, etc
+    m_camera = new Camera();
+    glfwSetWindowUserPointer(window, m_camera);
 
-    Gizmos::create(10000, 10000, 0, 0);
+    m_camera->position = glm::vec3(-10, 10, 0);
+    m_camera->pitch = glm::radians(-30.f);
 
-    glfwSetCursorPosCallback(window, &SetMousePosition);
-
-   // m_view = glm::lookAt(camPos, vec3(0), vec3(0, 1, 0));
-   // m_projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
+    //initalise mesh
+    meshes[0]->m_shader = testShader;
+    meshes[0]->m_texture = &spiderTexture;
+    meshes[0]->position = glm::vec3(0,5,0);
 
     return true;
 }
@@ -44,7 +39,6 @@ bool Application::Initialise()
 bool Application::Update()
 {
     m_camera->Update(0.1f, window);
-    m_lastMousePosition = m_mousePosition;
 
     return glfwWindowShouldClose(window) == false &&
         glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS;
@@ -53,38 +47,12 @@ bool Application::Update()
 void Application::Draw()
 {
     glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.25f, 0.25f, 0.25f, 1);
 
-    Gizmos::clear();
-
-    Gizmos::addTransform(glm::mat4(1));
-
-    glm::mat4 pv = m_camera->GetProjectionMatrix(windowWidth, windowHeight) * m_camera->GetViewMatrix();
-
-    vec4 yellow(1, 1, 0, 1);
-    vec4 black(0, 0, 0, 1);
-
-    for (int i = 0; i < 21; ++i) {
-        Gizmos::addLine(vec3(-10 + i, 0, 10),
-            vec3(-10 + i, 0, -10),
-            i == 10 ? yellow : black);
-        Gizmos::addLine(vec3(10, 0, -10 + i),
-            vec3(-10, 0, -10 + i),
-            i == 10 ? yellow : black);
-    }
-    Gizmos::draw(pv);
-
-    //Bind shader
-    testShader->Use();
-
-    //Bind transform
-    glm::mat4 transform = glm::rotate(m_meshTransform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-    transform = glm::translate(transform, glm::vec3(0, 3, 0));
-
-    auto pvm = pv * transform;
-    testShader->BindUniform("mvpMat", pvm);
-
+    glm::mat4 vpMat = m_camera->GetVPMatrix();
+    
     //Draw mesh
-    meshes[0]->Draw();
+    meshes[0]->Draw(vpMat);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -95,15 +63,10 @@ void Application::Exit()
     Gizmos::destroy();
 
     delete testShader;
+    delete m_camera;
 
     glfwDestroyWindow(window);
     glfwTerminate();
-}
-
-void Application::SetMousePosition(GLFWwindow* window, double x, double y)
-{
-    s_instance->m_mousePosition.x = (float)x;
-    s_instance->m_mousePosition.y = (float)y;
 }
 
 bool Application::GLFWStartup()

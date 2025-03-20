@@ -1,67 +1,66 @@
-#pragma once
 #include "Camera.h"
-#include "Application.h"
 
-void Camera::Update(float deltaTime, GLFWwindow* window)
+#include "glm/glm.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+
+void Camera::Update(float delta, GLFWwindow* window)
 {
-    float thetaR = glm::radians(m_theta);
-    float phiR = glm::radians(m_phi);
-
-    //calculate the forwards and right axes and up axis for the camera
-    glm::vec3 forward(cos(phiR) * cos(thetaR), sin(phiR), cos(phiR) * sin(thetaR));
-    glm::vec3 right(-sin(thetaR), 0, cos(thetaR));
-    glm::vec3 up(0, 1, 0);
-
-    // use WASD, ZX keys to move camera around
-    if (glfwGetKey(window, GLFW_KEY_X)) {
-        m_pos += up * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_Z)) {
-        m_pos -= up * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_W)) {
-        m_pos += forward * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S)) {
-        m_pos -= forward * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_D)) {
-        m_pos += right * deltaTime;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A)) {
-        m_pos -= right * deltaTime;
-    } 
-    if (glfwGetKey(window, GLFW_KEY_R)) {
-        SetPosition(glm::vec3(0, 10, 0));
-    }
-
-    glm::vec2 mouseDelta = Application::Get()->GetMouseDelta();
-
-    const float turnSpeed = 0.1f;
-    // if the right button is down, increment theta and phi
-    if (glfwGetMouseButton(window, 1))
-    {
-        m_theta += turnSpeed * mouseDelta.x;
-        m_phi -= turnSpeed * mouseDelta.y;
-    }
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		yaw += 0.001f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		yaw -= 0.001f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		pitch += 0.001f;
+		if (pitch > glm::radians(80.0f))
+		{
+			pitch = glm::radians(80.0f);
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		pitch -= 0.001f;
+		if (pitch < glm::radians(-80.0f))
+		{
+			pitch = glm::radians(-80.0f);
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	{
+		position += GetForwardVec() * 0.01f;
+	}
 }
 
-void Camera::SetPosition(glm::vec3 pos)
+glm::mat4 Camera::GetVPMatrix() const
 {
-    m_pos = pos;
+	glm::mat4 projectionMat = glm::perspective(fov, aspectRatio, 0.3f, 20.0f);
+
+	glm::mat4 viewMat(1);
+	viewMat = glm::translate(viewMat, position);
+
+	viewMat = glm::rotate(viewMat, yaw, glm::vec3(0, 1, 0));
+	viewMat = glm::rotate(viewMat, pitch, glm::vec3(1, 0, 0));
+
+
+	viewMat = glm::inverse(viewMat);
+
+	return projectionMat * viewMat;
+
 }
 
-glm::mat4 Camera::GetViewMatrix()
+glm::vec3 Camera::GetForwardVec() const
 {
-    float thetaR = glm::radians(m_theta);
-    float phiR = glm::radians(m_phi);
-    glm::vec3 forward(cos(phiR) * cos(thetaR), sin(phiR), cos(phiR) * sin(thetaR));
-    return glm::lookAt(m_pos, m_pos + forward, glm::vec3(0, 1, 0));
-}
+	glm::vec4 forward(0.0f, 0.0f, -1.0f, 0.0f);
+	glm::mat4 rotationMat(1);
+	rotationMat = glm::rotate(rotationMat, yaw, glm::vec3(0, 1, 0));
+	rotationMat = glm::rotate(rotationMat, pitch, glm::vec3(1, 0, 0));
 
-glm::mat4 Camera::GetProjectionMatrix(float w, float h)
-{
-    return glm::perspective(glm::pi<float>() * 0.25f,
-        w / h,
-        0.1f, 1000.f);
+	forward = rotationMat * forward;
+
+	return glm::vec3(forward.x, forward.y, forward.z);
 }
