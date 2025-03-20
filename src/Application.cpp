@@ -12,9 +12,10 @@ bool Application::Initialise()
     testShader = new ShaderProgram("simple.frag", "simple.vert");
 
     meshes.push_back(new Mesh());
-    meshes[0]->LoadFromFile("soulspear.obj");
-    Texture spiderTexture;
-    spiderTexture.LoadFromFile("Gerald.png");
+    meshes[0]->LoadFromFile("spider.obj");
+    
+    Texture* tex = new Texture();
+    tex->LoadFromFile("Gerald.png");
 
     //Set up rendering state
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
@@ -30,8 +31,9 @@ bool Application::Initialise()
 
     //initalise mesh
     meshes[0]->m_shader = testShader;
-    meshes[0]->m_texture = &spiderTexture;
+    meshes[0]->m_texture = tex;
     meshes[0]->position = glm::vec3(0,5,0);
+    meshes[0]->scale = glm::vec3(0.1);
 
     return true;
 }
@@ -50,7 +52,8 @@ void Application::Draw()
     glClearColor(0.25f, 0.25f, 0.25f, 1);
 
     glm::mat4 vpMat = m_camera->GetVPMatrix();
-    
+
+    testShader->Use();
     //Draw mesh
     meshes[0]->Draw(vpMat);
 

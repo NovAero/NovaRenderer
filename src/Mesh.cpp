@@ -17,10 +17,9 @@ Mesh::~Mesh()
 
 }
 
-void Mesh::Draw(glm::mat4 vpMatrix)
+void Mesh::Draw(glm::mat4 vpMatrix) const
 {
 	for (MeshSegment* segment : m_segments) {
-		segment->Bind();
 		m_texture->Bind("albedoMap", m_shader);
 
 		glm::mat4 modelMat = glm::scale(glm::mat4(1), scale);
@@ -35,6 +34,7 @@ void Mesh::Draw(glm::mat4 vpMatrix)
 		m_shader->BindUniform("mvpMat", mvpMat);
 		m_shader->BindUniform("modelMat", modelMat);
 
+		segment->Bind();
 		segment->Draw();
 		segment->Unbind();
 	}
