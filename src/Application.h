@@ -32,7 +32,8 @@ public:
 	const int GetWindowHeight() const { return m_windowHeight; }
 
 	static Application* Get() { return s_instance; }
-	
+	GLFWwindow* GetWindow() { return window; }
+
 protected:
 
 	std::vector<Mesh*> meshes;

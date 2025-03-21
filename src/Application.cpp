@@ -8,6 +8,9 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
 {
     if (!GLFWStartup(windowWidth, windowHeight)) return false;
 
+
+
+
     m_windowWidth = windowWidth;
     m_windowHeight = windowHeight;
 

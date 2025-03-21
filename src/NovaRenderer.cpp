@@ -1,7 +1,9 @@
-
+#pragma once
 #include "Application.h"
 #include "Utilities.h"
 #include <iostream>
+
+#include "src/GLFWCallbacks.h"
 
 int main() {
     //TODO
@@ -15,6 +17,9 @@ int main() {
     Application* app = new Application();
 
     if (app->Initialise(width, height)) {
+
+        glfwSetWindowSizeCallback(app->GetWindow(), WindowResizeCallback);
+
         while (app->Update()) {
             app->Draw();
         }

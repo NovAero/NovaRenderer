@@ -146,6 +146,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Gizmos.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\GLFWCallbacks.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\MeshSegment.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Gizmos.h" />
     <ClInclude Include="src\glad.h" />
+    <ClInclude Include="src\GLFWCallbacks.h" />
     <ClInclude Include="src\Graphics.h" />
     <ClInclude Include="src\khrplatform.h" />
     <ClInclude Include="src\Material.h" />
