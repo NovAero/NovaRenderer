@@ -7,7 +7,6 @@
 
 int main() {
     //TODO
-    //Add callback function for OnWindowResize - refer to lessBadRenderer code
     //Add object class that handles the texture loading for its mesh
     //Add lighting
 

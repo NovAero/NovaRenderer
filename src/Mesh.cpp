@@ -29,10 +29,11 @@ void Mesh::Draw(glm::mat4 vpMatrix) const
 
 		modelMat = glm::translate(modelMat, position);
 
-		glm::mat4 mvpMat = vpMatrix * modelMat;
+		glm::mat4 mvpMat = modelMat * vpMatrix;
 
 		m_shader->BindUniform("mvpMat", mvpMat);
 		m_shader->BindUniform("modelMat", modelMat);
+		m_shader->BindUniform("lightDir", light);
 
 		segment->Bind();
 		segment->Draw();
@@ -72,7 +73,7 @@ void Mesh::LoadFromFile(const char* filePath)
 				vert.position.y = meshPointer->mVertices[index].y;
 				vert.position.z = meshPointer->mVertices[index].z;
 
-				if (meshPointer->HasNormals()) { //if there are normals included in the mesh
+				if (meshPointer->HasNormals()) {
 					vert.normal.x = meshPointer->mNormals[index].x;
 					vert.normal.y = meshPointer->mNormals[index].y;
 					vert.normal.z = meshPointer->mNormals[index].z;
@@ -85,16 +86,6 @@ void Mesh::LoadFromFile(const char* filePath)
 			}
 		}
 
-		for (unsigned int f_ix = 0; f_ix < meshPointer->mNumFaces; ++f_ix) {
-			//get new face
-			const auto& face = meshPointer->mFaces[f_ix];
-
-			//get all the face's index data and add it to the index buffer
-			for (unsigned int ix_ix = 0; ix_ix < face.mNumIndices; ++ix_ix) {
-				indices.push_back(face.mIndices[ix_ix]);
-			}
-		}
-		
 		AddSegment(new MeshSegment(vertices, indices));
 	}
 }

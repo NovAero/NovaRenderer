@@ -8,9 +8,6 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
 {
     if (!GLFWStartup(windowWidth, windowHeight)) return false;
 
-
-
-
     m_windowWidth = windowWidth;
     m_windowHeight = windowHeight;
 
@@ -18,10 +15,10 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     testShader = new ShaderProgram("simple.frag", "simple.vert");
 
     meshes.push_back(new Mesh());
-    meshes[0]->LoadFromFile("spider.obj");
+    meshes[0]->LoadFromFile("soulspear.obj");
     
     Texture* tex = new Texture();
-    tex->LoadFromFile("SpiderTex.jpg");
+    tex->LoadFromFile("Gerald.png");
 
     //Set up rendering state
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
@@ -32,14 +29,14 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_camera = new Camera();
     glfwSetWindowUserPointer(window, m_camera);
 
-    m_camera->position = glm::vec3(-10, 10, 0);
+    m_camera->position = glm::vec3(0, 2, 3);
     m_camera->pitch = glm::radians(-30.f);
 
     //initalise mesh
     meshes[0]->m_shader = testShader;
     meshes[0]->m_texture = tex;
-    meshes[0]->position = glm::vec3(0,5,0);
-    meshes[0]->scale = glm::vec3(0.1);
+    meshes[0]->position = glm::vec3(-1,0,0);
+    meshes[0]->scale = glm::vec3(1);
 
     return true;
 }
@@ -47,7 +44,10 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
 
 bool Application::Update()
 {
-    m_camera->Update(0.1f, window);
+    float time = glfwGetTime();
+
+    m_camera->Update(time, window);
+    meshes[0]->light = glm::vec3(1, 0, 0);// glm::normalize(vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
 
     return glfwWindowShouldClose(window) == false &&
         glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS;

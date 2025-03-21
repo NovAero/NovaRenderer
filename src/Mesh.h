@@ -4,7 +4,7 @@
 
 class MeshSegment;
 class ShaderProgram;
-class Texture;
+struct Texture;
 
 class Mesh {
 public:
@@ -30,5 +30,7 @@ public:
 	Texture* m_texture = nullptr;
 	ShaderProgram* m_shader = nullptr;
 	std::vector<MeshSegment*> m_segments;
+
+	glm::vec3 light;
 
 };
