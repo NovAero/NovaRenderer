@@ -18,7 +18,7 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     meshes[0]->LoadFromFile("soulspear.obj");
     
     Texture* tex = new Texture();
-    tex->LoadFromFile("Gerald.png");
+    tex->LoadFromFile("soulspear_diffuse.tga");
 
     //Set up rendering state
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
@@ -29,13 +29,13 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_camera = new Camera();
     glfwSetWindowUserPointer(window, m_camera);
 
-    m_camera->position = glm::vec3(0, 2, 3);
+    m_camera->position = glm::vec3(0,0,0);
     m_camera->pitch = glm::radians(-30.f);
 
     //initalise mesh
     meshes[0]->m_shader = testShader;
     meshes[0]->m_texture = tex;
-    meshes[0]->position = glm::vec3(-1,0,0);
+    meshes[0]->position = glm::vec3(0,-3,-5);
     meshes[0]->scale = glm::vec3(1);
 
     return true;

@@ -8,15 +8,15 @@ void Camera::Update(float delta, GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		yaw += 0.001f;
+		yaw += camSpeed * delta;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		yaw -= 0.001f;
+		yaw -= camSpeed * delta;
 	}
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		pitch += 0.001f;
+		pitch += camSpeed * delta;
 		if (pitch > glm::radians(80.0f))
 		{
 			pitch = glm::radians(80.0f);
@@ -24,7 +24,7 @@ void Camera::Update(float delta, GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		pitch -= 0.001f;
+		pitch -= camSpeed * delta;
 		if (pitch < glm::radians(-80.0f))
 		{
 			pitch = glm::radians(-80.0f);
@@ -38,14 +38,13 @@ void Camera::Update(float delta, GLFWwindow* window)
 
 glm::mat4 Camera::GetVPMatrix() const
 {
-	glm::mat4 projectionMat = glm::perspective(fov, aspectRatio, 0.3f, 20.0f);
+	glm::mat4 projectionMat = glm::perspective(fov, aspectRatio, 0.3f, 200.0f);
 
 	glm::mat4 viewMat(1);
 	viewMat = glm::translate(viewMat, position);
 
 	viewMat = glm::rotate(viewMat, yaw, glm::vec3(0, 1, 0));
 	viewMat = glm::rotate(viewMat, pitch, glm::vec3(1, 0, 0));
-
 
 	viewMat = glm::inverse(viewMat);
 

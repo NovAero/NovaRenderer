@@ -10,8 +10,8 @@ int main() {
     //Add object class that handles the texture loading for its mesh
     //Add lighting
 
-    unsigned int width = 768;
-    unsigned int height = 768;
+    unsigned int width = 1280;
+    unsigned int height = 720;
 
     Application* app = new Application();
 

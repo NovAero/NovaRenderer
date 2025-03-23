@@ -29,7 +29,7 @@ void Mesh::Draw(glm::mat4 vpMatrix) const
 
 		modelMat = glm::translate(modelMat, position);
 
-		glm::mat4 mvpMat = modelMat * vpMatrix;
+		glm::mat4 mvpMat = vpMatrix * modelMat;
 
 		m_shader->BindUniform("mvpMat", mvpMat);
 		m_shader->BindUniform("modelMat", modelMat);
@@ -45,7 +45,7 @@ void Mesh::LoadFromFile(const char* filePath)
 {
 	Assimp::Importer mesh_importer;
 
-	const aiScene* scene = mesh_importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	const aiScene* scene = mesh_importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 
 	if (!scene) return;
 

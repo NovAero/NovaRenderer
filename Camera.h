@@ -16,6 +16,7 @@ public:
 public:
 
 	glm::vec3 position;
+	float camSpeed = 0.008f;
 	float pitch = 0.0f; //looking up and down
 	float yaw = 0.0f; //looking left and right
 	//float roll = 0.0f; //skewing the camera, let's just not do this
