@@ -3,18 +3,25 @@
 in vec3 normal; //world space hopefully
 in vec2 uvs;
 
-out vec4 PixelColour;
+out vec4 FragColour;
 
 uniform vec3 lightDir;
+uniform float lightIntensity;
+uniform vec4 lightColour;
+uniform vec4 ambientColour;
 uniform sampler2D albedoMap;
 
 void main()
 {
-	vec3 sunDirection = normalize(lightDir);
+	vec3 norm = normalize(normal);
+	vec3 light = normalize(lightDir);
+
+	float lambertTerm = max( 0, min( 1, dot( norm, -light ) ) );
+
 	vec3 albedo = texture(albedoMap, uvs).rgb;
+
+	vec3 diffuse = lightColour.xyz * lightIntensity * lambertTerm;
+	vec3 ambient = ambientColour.xyz;
 	
-	float illumination = dot(-sunDirection, normalize(normal));
-	
-	PixelColour = vec4(albedo * illumination, 1.0);
-    //PixelColour = vec4(uvs.x, uvs.y, 0,1);
+	FragColour = vec4(albedo * (diffuse + ambient), 1.0);
 }

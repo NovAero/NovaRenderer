@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 #include "Graphics.h"
+#include "Light.h"
 
 class MeshSegment;
 class ShaderProgram;
 struct Texture;
-
 class Mesh {
 public:
 	Mesh() = default;
@@ -29,6 +29,5 @@ public:
 	ShaderProgram* m_shader = nullptr;
 	std::vector<MeshSegment*> m_segments;
 
-	glm::vec3 light;
-
+	Light* testLight;
 };

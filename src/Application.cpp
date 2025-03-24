@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Camera.h"
 #include "Material.h"
+#include "Light.h"
 
 Application* Application::s_instance = nullptr;
 
@@ -29,14 +30,17 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_camera = new Camera();
     glfwSetWindowUserPointer(window, m_camera);
 
-    m_camera->position = glm::vec3(-5,5,0);
+    m_camera->position = glm::vec3(0,5,2);
     m_camera->pitch = glm::radians(-30.f);
+
+    Light* dirLight = new Light(glm::vec3(1, 0, 0), 1.f, glm::vec4(1,0,1,1));
 
     //initalise mesh
     meshes[0]->m_shader = testShader;
     meshes[0]->m_texture = tex;
-    meshes[0]->position = glm::vec3(0,-3,-5);
+    meshes[0]->position = glm::vec3(0);
     meshes[0]->scale = glm::vec3(1);
+    meshes[0]->testLight = dirLight;
 
     return true;
 }
@@ -51,8 +55,6 @@ bool Application::Update()
     m_camera->Update(delta, window);
 
     m_lastMousePos = m_mousePos;
-    
-    meshes[0]->light = glm::vec3(1, 0, 0);// glm::normalize(vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
 
     return glfwWindowShouldClose(window) == false &&
         glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS;

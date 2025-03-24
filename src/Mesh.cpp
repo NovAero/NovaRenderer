@@ -14,7 +14,7 @@
 
 Mesh::~Mesh()
 {
-
+	delete testLight;
 }
 
 void Mesh::Draw(glm::mat4 vpMatrix) const
@@ -33,7 +33,10 @@ void Mesh::Draw(glm::mat4 vpMatrix) const
 
 		m_shader->BindUniform("mvpMat", mvpMat);
 		m_shader->BindUniform("modelMat", modelMat);
-		m_shader->BindUniform("lightDir", light);
+		m_shader->BindUniform("lightDir", testLight->GetLightVec());
+		m_shader->BindUniform("lightColour", testLight->GetColour());
+		m_shader->BindUniform("lightIntensity", testLight->GetLuminance());
+		m_shader->BindUniform("ambientColour", glm::vec4(0.3f, 0.3f, 0.3f, 1));
 
 		segment->Bind();
 		segment->Draw();
