@@ -12,6 +12,7 @@ public:
 
 	glm::mat4 GetVPMatrix() const;
 	glm::vec3 GetForwardVec() const;
+	glm::vec3 GetRightVec() const;
 
 public:
 
@@ -23,6 +24,8 @@ public:
 	//float roll = 0.0f; //skewing the camera, let's just not do this
 
 	float aspectRatio = 16.0f / 9.0f;
+	float nearClip = 0.1f;
+	float farClip = 200.f;
 
 	float fov = glm::radians(90.0f);
 };

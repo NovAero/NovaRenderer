@@ -31,6 +31,10 @@ public:
 	const int GetWindowWidth() const { return m_windowWidth; }
 	const int GetWindowHeight() const { return m_windowHeight; }
 
+	glm::vec2 GetMousePosition() { return m_mousePos; }
+	glm::vec2 GetMouseDelta()	{ return m_mousePos - m_lastMousePos; }
+
+	static void SetMousePosition(GLFWwindow* window, double x, double y);
 	static Application* Get() { return s_instance; }
 	GLFWwindow* GetWindow() { return window; }
 
@@ -44,6 +48,9 @@ protected:
 
 	Camera* m_camera;
 	ShaderProgram* testShader;
+
+	glm::vec2 m_mousePos;
+	glm::vec2 m_lastMousePos;
 
 	GLFWwindow* window;
 	std::string windowName = "NovaRenderer";

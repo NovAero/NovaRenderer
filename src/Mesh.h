@@ -15,11 +15,9 @@ public:
 	Mesh& operator=(const Mesh& other) = delete;
 
 	void Draw(glm::mat4 vpMatrix) const;
-
 	void LoadFromFile(const char* filePath);
 
 private:
-	
 	void AddSegment(MeshSegment* mesh);
 
 public:
