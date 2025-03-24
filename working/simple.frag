@@ -15,6 +15,6 @@ void main()
 	
 	float illumination = dot(-sunDirection, normalize(normal));
 	
-	PixelColour = vec4(albedo, 1.0);
+	PixelColour = vec4(albedo * illumination, 1.0);
     //PixelColour = vec4(uvs.x, uvs.y, 0,1);
 }

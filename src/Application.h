@@ -34,6 +34,10 @@ public:
 	static Application* Get() { return s_instance; }
 	GLFWwindow* GetWindow() { return window; }
 
+public:
+
+	float delta = 0.f;
+
 protected:
 
 	std::vector<Mesh*> meshes;
@@ -49,6 +53,8 @@ private:
 	
 	static Application* s_instance;
 	
+	float prevDelta = 0.f;
+
 	unsigned int m_windowWidth = 1280;
 	unsigned int m_windowHeight = 720;
 };
