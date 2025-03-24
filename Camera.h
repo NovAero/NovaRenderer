@@ -16,12 +16,12 @@ public:
 
 public:
 
-	glm::vec3 position;
+	glm::vec3 position = { 0,0,0 };
 	float camSpeed = 2.f;
 
 	float pitch = 0.0f; //looking up and down
 	float yaw = 0.0f; //looking left and right
-	//float roll = 0.0f; //skewing the camera, let's just not do this
+	//float roll = 0.0f; //skewing the camera, left in for optional implementation
 
 	float aspectRatio = 16.0f / 9.0f;
 	float nearClip = 0.1f;

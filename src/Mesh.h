@@ -6,6 +6,8 @@
 class MeshSegment;
 class ShaderProgram;
 struct Texture;
+struct Material;
+
 class Mesh {
 public:
 	Mesh() = default;
@@ -14,7 +16,7 @@ public:
 
 	Mesh& operator=(const Mesh& other) = delete;
 
-	void Draw(glm::mat4 vpMatrix) const;
+	void Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const;
 	void LoadFromFile(const char* filePath);
 
 private:
@@ -26,8 +28,9 @@ public:
 	glm::vec3 scale{ 1 };
 
 	Texture* m_texture = nullptr;
+	Material* m_material = nullptr;
 	ShaderProgram* m_shader = nullptr;
 	std::vector<MeshSegment*> m_segments;
 
-	Light* testLight;
+	Light* testLight = nullptr;
 };

@@ -13,13 +13,15 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_windowHeight = windowHeight;
 
     //Asset loading
-    testShader = new ShaderProgram("simple.frag", "simple.vert");
+    testShader = new ShaderProgram("BasicLitMaterial.frag", "BasicLitMaterial.vert");
 
     meshes.push_back(new Mesh());
     meshes[0]->LoadFromFile("soulspear.obj");
     
     Texture* tex = new Texture();
     tex->LoadFromFile("soulspear_diffuse.tga");
+
+    Material* mat = new Material("soulspear.mtl");
 
     //Set up rendering state
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
@@ -30,14 +32,15 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_camera = new Camera();
     glfwSetWindowUserPointer(window, m_camera);
 
-    m_camera->position = glm::vec3(0,5,2);
+    m_camera->position = glm::vec3(0,2,2);
     m_camera->pitch = glm::radians(-30.f);
 
-    Light* dirLight = new Light(glm::vec3(1, 0, 0), 1.f, glm::vec4(1,0,1,1));
+    Light* dirLight = new Light(glm::vec3(1, 0, 0), 30.f, glm::vec4(1,1,1,1));
 
-    //initalise mesh
+    //Initalise mesh
     meshes[0]->m_shader = testShader;
     meshes[0]->m_texture = tex;
+    meshes[0]->m_material = mat;
     meshes[0]->position = glm::vec3(0);
     meshes[0]->scale = glm::vec3(1);
     meshes[0]->testLight = dirLight;
@@ -69,7 +72,7 @@ void Application::Draw()
 
     testShader->Use();
     //Draw mesh
-    meshes[0]->Draw(vpMat);
+    meshes[0]->Draw(vpMat, m_camera->position);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

@@ -100,7 +100,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="working\simple.frag" />
-    <None Include="working\simple.vert" />
+    <None Include="working\BasicLitMaterial.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="working\BasicLitMaterial.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="working\simple.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="working\simple.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

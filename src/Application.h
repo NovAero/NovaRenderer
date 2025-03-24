@@ -31,8 +31,8 @@ public:
 	const int GetWindowWidth() const { return m_windowWidth; }
 	const int GetWindowHeight() const { return m_windowHeight; }
 
-	glm::vec2 GetMousePosition() { return m_mousePos; }
-	glm::vec2 GetMouseDelta()	{ return m_mousePos - m_lastMousePos; }
+	glm::vec2 GetMousePosition() const { return m_mousePos; }
+	glm::vec2 GetMouseDelta() const	{ return m_mousePos - m_lastMousePos; }
 
 	static void SetMousePosition(GLFWwindow* window, double x, double y);
 	static Application* Get() { return s_instance; }

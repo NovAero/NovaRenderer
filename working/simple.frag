@@ -24,4 +24,5 @@ void main()
 	vec3 ambient = ambientColour.xyz;
 	
 	FragColour = vec4(albedo * (diffuse + ambient), 1.0);
+	FragColour = vec4(1);
 }

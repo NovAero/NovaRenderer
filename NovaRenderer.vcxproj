@@ -172,6 +172,8 @@
     <ClInclude Include="src\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="working\BasicLitMaterial.frag" />
+    <None Include="working\BasicLitMaterial.vert" />
     <None Include="working\simple.frag" />
     <None Include="working\simple.vert" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include "Application.h"
+#include "Material.h"
 #include "Utilities.h"
 #include <iostream>
 

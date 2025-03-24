@@ -15,12 +15,15 @@
 Mesh::~Mesh()
 {
 	delete testLight;
+	delete m_texture;
+	delete m_material;
 }
 
-void Mesh::Draw(glm::mat4 vpMatrix) const
+void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
 {
 	for (MeshSegment* segment : m_segments) {
-		m_texture->Bind("albedoMap", m_shader);
+		m_texture->Bind("albedoMap",m_shader);
+		m_material->Apply(m_shader);
 
 		glm::mat4 modelMat = glm::scale(glm::mat4(1), scale);
 		modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
@@ -36,7 +39,8 @@ void Mesh::Draw(glm::mat4 vpMatrix) const
 		m_shader->BindUniform("lightDir", testLight->GetLightVec());
 		m_shader->BindUniform("lightColour", testLight->GetColour());
 		m_shader->BindUniform("lightIntensity", testLight->GetLuminance());
-		m_shader->BindUniform("ambientColour", glm::vec4(0.3f, 0.3f, 0.3f, 1));
+		m_shader->BindUniform("ambientColour", glm::vec4(1,1,1, 1));
+		m_shader->BindUniform("cameraPosition", cameraPos);
 
 		segment->Bind();
 		segment->Draw();
@@ -48,7 +52,7 @@ void Mesh::LoadFromFile(const char* filePath)
 {
 	Assimp::Importer mesh_importer;
 
-	const aiScene* scene = mesh_importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
+	const aiScene* scene = mesh_importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_ConvertToLeftHanded);
 
 	if (!scene) return;
 
