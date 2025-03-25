@@ -6,44 +6,42 @@ in vec2 uvs;
 
 out vec4 FragColour;
 
-uniform vec3 cameraPosition;
-
 uniform sampler2D albedoMap;
 
-uniform vec3 lightDir;
-uniform float lightIntensity;
-uniform vec4 lightColour;
-uniform vec4 ambientColour;
+layout (std140, binding = 0) uniform Lights
+{
+	vec3 lightVec;
+	vec4 colour;
 
-uniform vec3 Ka; // ambient material colour
-uniform vec3 Kd; // diffuse material colour
-uniform vec3 Ks; // specular material colour
-uniform float specExponent;
+} lights[4];
+
+	uniform vec4 ambientColour;
+	uniform int numLights;
+
+vec3 CalculateLighting(vec3 fragPos, vec3 normal)
+{
+	vec3 diffuse = vec3(0.0);
+
+    for (int i = 0; i < numLights && i < 4; i++)
+    {
+        vec3 lightDir = normalize(lights[i].lightVec);
+		float diff = max(0.0, dot(normal, lightDir));
+		
+		diffuse += lightDir * (diff * lights[i].lightVec);
+    }
+
+    return diffuse;
+}
 
 void main()
 {
-	// ensure normal and light direction are normalised
-	vec3 N = normalize(normal);
-	vec3 L = normalize(lightDir);
+	if(gl_FrontFacing){
+		vec3 albedo = texture(albedoMap, uvs).rgb;
+		vec3 norm = normalize(normal);
+
+		vec3 diffuse = lights[0].lightVec; //CalculateLighting(position, norm);
+		vec3 ambient = ambientColour.xyz;
 	
-	// calculate lambert term (negate light direction)
-	float lambertTerm = max( 0, min( 1, dot( N, -L ) ) );
-	
-	// calculate view vector and reflection vector
-	vec3 V = normalize(cameraPosition - position.xyz);
-	vec3 R = reflect( L, N );
-	
-	// calculate specular term
-	float specularTerm = pow( max( 0, dot( R, V ) ), specExponent );
-	
-	// calculate each colour property
-	vec3 ambient = ambientColour.xyz * Ka;
-	vec3 diffuse = lightColour.xyz * Kd * lambertTerm;
-	vec3 specular = lightColour.xyz * Ks * specularTerm;
-	
-	vec3 albedo = texture(albedoMap, uvs).rgb;
-	
-	//Final colour state
-	FragColour = vec4( albedo * (ambient + diffuse + specular), 1);
-	//FragColour = vec4(specularTerm, 0, 0, 1);
+		FragColour = vec4(albedo * diffuse, 1.0);
+	}
 }

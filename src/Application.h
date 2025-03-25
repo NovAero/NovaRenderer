@@ -34,6 +34,9 @@ public:
 	glm::vec2 GetMousePosition() const { return m_mousePos; }
 	glm::vec2 GetMouseDelta() const	{ return m_mousePos - m_lastMousePos; }
 
+	void LoadLighting();
+	void BindLightsToShader(ShaderProgram* shader);
+
 	static void SetMousePosition(GLFWwindow* window, double x, double y);
 	static Application* Get() { return s_instance; }
 	GLFWwindow* GetWindow() { return window; }
@@ -45,6 +48,9 @@ public:
 protected:
 
 	std::vector<Mesh*> meshes;
+	Light* lights[4];
+
+	unsigned int lightUBO;
 
 	Camera* m_camera;
 	ShaderProgram* testShader;

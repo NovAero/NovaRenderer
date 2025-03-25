@@ -1,6 +1,7 @@
 #include "ShaderProgram.h"
 #include "Utilities.h"
 #include <iostream>
+#include "Light.h"
 
 ShaderProgram::ShaderProgram(std::string fragFilePath, std::string vertFilePath)
 {

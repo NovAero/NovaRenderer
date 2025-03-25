@@ -23,6 +23,8 @@ private:
 	void AddSegment(MeshSegment* mesh);
 
 public:
+	std::vector<MeshSegment*> m_segments;
+	
 	glm::vec3 position{ 0 };
 	glm::vec3 rotation{ 0 };
 	glm::vec3 scale{ 1 };
@@ -30,7 +32,5 @@ public:
 	Texture* m_texture = nullptr;
 	Material* m_material = nullptr;
 	ShaderProgram* m_shader = nullptr;
-	std::vector<MeshSegment*> m_segments;
-
-	Light* testLight = nullptr;
+	Light* lights;
 };

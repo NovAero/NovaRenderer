@@ -16,4 +16,5 @@ void main()
 	normal = (modelMat * vec4(vertNormal, 0.0)).xyz;
 	vec4 transformedPos = mvpMat * vec4(vertPos, 1.0);
 	gl_Position = transformedPos;
+
 }

@@ -14,7 +14,6 @@
 
 Mesh::~Mesh()
 {
-	delete testLight;
 	delete m_texture;
 	delete m_material;
 }
@@ -23,7 +22,7 @@ void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
 {
 	for (MeshSegment* segment : m_segments) {
 		m_texture->Bind("albedoMap",m_shader);
-		m_material->Apply(m_shader);
+		//m_material->Apply(m_shader);
 
 		glm::mat4 modelMat = glm::scale(glm::mat4(1), scale);
 		modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
@@ -36,11 +35,9 @@ void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
 
 		m_shader->BindUniform("mvpMat", mvpMat);
 		m_shader->BindUniform("modelMat", modelMat);
-		m_shader->BindUniform("lightDir", testLight->GetLightVec());
-		m_shader->BindUniform("lightColour", testLight->GetColour());
-		m_shader->BindUniform("lightIntensity", testLight->GetLuminance());
-		m_shader->BindUniform("ambientColour", glm::vec4(1,1,1, 1));
-		m_shader->BindUniform("cameraPosition", cameraPos);
+
+		m_shader->BindUniform("ambientColour", glm::vec4(0,0.2,0,1));
+		m_shader->BindUniform("numLights", 1);
 
 		segment->Bind();
 		segment->Draw();

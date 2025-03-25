@@ -2,9 +2,10 @@
 
 #include "Graphics.h"
 #include <string>
-
+#include <vector>
 #include <glm/glm.hpp>
 
+class Light;
 
 class ShaderProgram {
 public:
@@ -16,6 +17,7 @@ public:
 	ShaderProgram& operator=(const ShaderProgram& other) = delete;
 
 	void Use();
+	GLuint ID() { return shaderProgram; }
 
 	//Uniform binds
 	void BindUniform(std::string name, float value);
