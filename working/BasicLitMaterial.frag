@@ -1,6 +1,6 @@
 #version 460
 
-in vec3 position;
+in vec3 fragPos;
 in vec3 normal;
 in vec2 uvs;
 
@@ -8,40 +8,37 @@ out vec4 FragColour;
 
 uniform sampler2D albedoMap;
 
-layout (std140, binding = 0) uniform Lights
+struct PointLight
 {
-	vec3 lightVec;
-	vec4 colour;
+	vec3 position;
 
-} lights[4];
+	float constant;
+	float linear;
+	float quadratic;
+	
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
 
-	uniform vec4 ambientColour;
-	uniform int numLights;
-
-vec3 CalculateLighting(vec3 fragPos, vec3 normal)
+struct DirLight
 {
-	vec3 diffuse = vec3(0.0);
+	vec4 lightVec; //xyz are direction, w is strength;
 
-    for (int i = 0; i < numLights && i < 4; i++)
-    {
-        vec3 lightDir = normalize(lights[i].lightVec);
-		float diff = max(0.0, dot(normal, lightDir));
-		
-		diffuse += lightDir * (diff * lights[i].lightVec);
-    }
-
-    return diffuse;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
 }
+
+uniform int numPntLights;
+
+uniform DirLight dirLight;
+uniform PointLight pntLights[numPntLights];
 
 void main()
 {
-	if(gl_FrontFacing){
-		vec3 albedo = texture(albedoMap, uvs).rgb;
-		vec3 norm = normalize(normal);
+	vec3 norm = normalize(normal);
+	vec3 viewDir = normalize(viewPos - fragPos);
 
-		vec3 diffuse = lights[0].lightVec; //CalculateLighting(position, norm);
-		vec3 ambient = ambientColour.xyz;
-	
-		FragColour = vec4(albedo * diffuse, 1.0);
-	}
+	vec3 result = CalcDirLights
 }

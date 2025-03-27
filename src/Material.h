@@ -31,7 +31,7 @@ struct Material {
 	void LoadFromFile(std::string fileName);
 	void Apply(ShaderProgram* shader);
 
-//private:
+private:
 
 	glm::vec3 Ka, Kd, Ks;
 	float specExpo;

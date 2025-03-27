@@ -37,7 +37,7 @@ void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
 		m_shader->BindUniform("modelMat", modelMat);
 
 		m_shader->BindUniform("ambientColour", glm::vec4(0,0.2,0,1));
-		m_shader->BindUniform("numLights", 1);
+		m_shader->BindUniform("numLights", 2);
 
 		segment->Bind();
 		segment->Draw();

@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Light.h"
+#include <sstream>
 
 Application* Application::s_instance = nullptr;
 
@@ -34,6 +35,7 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_camera->pitch = glm::radians(-30.f);
 
     lights[0] = new Light(glm::vec3(1, 0, 0), 30.f, glm::vec4(1, 1, 1, 1));
+    lights[1] = new Light(glm::vec3(0, 1, 0), 30.f, glm::vec4(1, 1, 1, 1));
     LoadLighting();
     BindLightsToShader(testShader);
 
@@ -100,42 +102,6 @@ void Application::Exit()
 
     glfwDestroyWindow(window);
     glfwTerminate();
-}
-
-void Application::LoadLighting()
-{
-    unsigned int bufferSize = 4 * (sizeof(glm::vec3) + sizeof(glm::vec4));
-
-    glGenBuffers(1, &lightUBO);
-    //bind and allocate memory for 4 sets of vec3 and 4
-    glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
-    glBufferData(GL_UNIFORM_BUFFER, bufferSize, NULL, GL_STATIC_DRAW);
-    //unbind
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-}
-
-void Application::BindLightsToShader(ShaderProgram* shader)
-{
-    int lightSize = sizeof(glm::vec3) + sizeof(glm::vec4);
-    unsigned int ubindex = glGetUniformBlockIndex(shader->ID(), "lights[0]");
-    glUniformBlockBinding(shader->ID(), ubindex, 0);
-    
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, lightUBO, 0, 4 * lightSize);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, lightUBO);
-    
-    for (int i = 0; i < 4; i++) {
-        int offset = i * lightSize;
-
-        if (lights[i] == nullptr) break;
-
-        glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::vec3), glm::value_ptr(lights[i]->GetLightVec()));
-        glBufferSubData(GL_UNIFORM_BUFFER, offset + sizeof(glm::vec3), sizeof(glm::vec4), glm::value_ptr(lights[i]->GetColour()));
-
-    }
-
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void Application::SetMousePosition(GLFWwindow* window, double x, double y)

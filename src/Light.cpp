@@ -1,40 +1,55 @@
 #include "Light.h"
 #include <glm/ext.hpp>
 
-Light::Light(glm::vec3 direction, float luminance, glm::vec4 colour)
+void DirLight::SetDirection(glm::vec3 dir)
 {
-	luxVec = glm::normalize(direction) * luminance;
-	this->colour = colour;
+	dir = glm::normalize(dir); //ensure direction is normalized;
+	dirNstr = glm::vec4(dir, dirNstr.w);
 }
 
-void Light::SetLuminance(float lum)
+void DirLight::SetDirection(float x, float y, float z)
 {
-	luxVec = glm::normalize(luxVec);
-	luxVec *= lum;
+	SetDirection(glm::vec3(x, y, z));
 }
 
-void Light::SetDirection(glm::vec3 direction)
+void DirLight::SetLuminance(float luminance)
 {
-	float mag = glm::length(luxVec);
-	luxVec = direction * mag;
+	dirNstr.w = luminance;
 }
 
-void Light::SetColour(glm::vec4 rgba)
+float DirLight::GetLuminance()
 {
-	colour = rgba;
+	return dirNstr.w;
 }
 
-glm::vec3 Light::GetLightVec()
+glm::vec3 DirLight::GetDirection()
 {
-	return glm::normalize(luxVec);
+	return glm::vec3(dirNstr.x, dirNstr.y, dirNstr.z);
 }
 
-float Light::GetLuminance()
+glm::vec3 Light::GetAmbient() const
 {
-	return glm::length(luxVec);
+	return ambient;
 }
 
-glm::vec4 Light::GetColour()
+glm::vec3 Light::GetDiffuse() const
 {
-	return colour;
+	return diffuse;
+}
+
+glm::vec3 Light::GetSpecular() const
+{
+	return specular;
+}
+
+void Light::SetAmbient()
+{
+}
+
+void Light::SetDiffuse()
+{
+}
+
+void Light::SetSpecular()
+{
 }

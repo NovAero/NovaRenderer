@@ -2,25 +2,46 @@
 
 #include <glm/glm.hpp>
 
+
 class Light {
 public:
 
 	Light() = default;
-	Light(glm::vec3 direction, float luminance, glm::vec4 colour = glm::vec4(1));
 	Light(const Light& other) = delete;
-	~Light() = default;
+	virtual ~Light() = 0;
 
 	Light& operator=(const Light& other) = delete;
 
-	void SetLuminance(float lum);
-	void SetDirection(glm::vec3 direction);
-	void SetColour(glm::vec4 rgba);
+	glm::vec3 GetAmbient() const;
+	glm::vec3 GetDiffuse() const;
+	glm::vec3 GetSpecular() const;
 
-	glm::vec3 GetLightVec();
-	float GetLuminance();
-	glm::vec4 GetColour();
+	void SetAmbient();
+	void SetDiffuse();
+	void SetSpecular();
 
 protected:
-	glm::vec3 luxVec = { 0,-1,0 }; //Straight down
-	glm::vec4 colour = { 1,1,1,1 }; //Pure white
+
+	glm::vec3 ambient, diffuse, specular;
+
+};
+
+
+class DirLight : public Light {
+
+	DirLight() = default;
+	DirLight(glm::vec4 dirAndStr, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	~DirLight() = default;
+
+	void SetDirection(glm::vec3 dir);
+	void SetDirection(float x, float y, float z);
+	void SetLuminance(float luminance);
+
+	float GetLuminance();
+	glm::vec3 GetDirection();
+
+protected:
+
+	//Direction is xyz and luminance (strength) is w
+	glm::vec4 dirNstr;
 };
