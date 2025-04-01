@@ -33,6 +33,10 @@ struct Material {
 
 private:
 
+	Texture* m_diffuse = nullptr;
+	Texture* m_specular = nullptr;
+	Texture* m_normal = nullptr;
+	
 	glm::vec3 Ka, Kd, Ks;
 	float specExpo;
 };

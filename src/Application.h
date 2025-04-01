@@ -48,7 +48,7 @@ protected:
 	std::vector<Light*> lights;
 
 	Camera* m_camera;
-	ShaderProgram* testShader;
+	ShaderProgram* basicUnlitShader;
 
 	glm::vec2 m_mousePos;
 	glm::vec2 m_lastMousePos;

@@ -3,6 +3,7 @@
 #include "Graphics.h"
 #include "Light.h"
 
+
 class MeshSegment;
 class ShaderProgram;
 struct Texture;
@@ -29,7 +30,6 @@ public:
 	glm::vec3 rotation{ 0 };
 	glm::vec3 scale{ 1 };
 
-	Texture* m_texture = nullptr;
 	Material* m_material = nullptr;
 	ShaderProgram* m_shader = nullptr;
 	std::vector<Light*> lights;

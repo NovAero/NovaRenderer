@@ -21,9 +21,9 @@ void Light::SetSpecular(glm::vec3 value)
 DirLight::DirLight(glm::vec4 dirAndStr, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
 	: m_dirNstr(dirAndStr)
 {
-	SetAmbient(ambient * dirAndStr.w);
-	SetDiffuse(diffuse * dirAndStr.w);
-	SetSpecular(specular * dirAndStr.w);
+	SetAmbient(ambient);
+	SetDiffuse(diffuse);
+	SetSpecular(specular);
 }
 
 DirLight::~DirLight()
@@ -111,7 +111,7 @@ float PointLight::GetLuminance() const
 
 glm::vec3 PointLight::GetPosition() const
 {
-	return glm::vec3(m_posNstr.z, m_posNstr.y, m_posNstr.z);
+	return glm::vec3(m_posNstr.x, m_posNstr.y, m_posNstr.z);
 }
 
 glm::vec3 PointLight::GetCoLinQuad() const

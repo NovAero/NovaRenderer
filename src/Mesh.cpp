@@ -11,31 +11,29 @@
 #include <assimp/postprocess.h>
 
 #include "glm/ext/matrix_transform.hpp"
+#include "glm/detail/type_quat.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
+#include "glm/mat4x4.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/transform.hpp"
 
 Mesh::~Mesh()
 {
-	delete m_texture;
 	delete m_material;
 }
 
 void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
 {
 	for (MeshSegment* segment : m_segments) {
-		if (m_texture) {
-			m_texture->Bind("albedoMap", m_shader);
-		}
+
 		if (m_material) {
 			m_material->Apply(m_shader);
 		}
 
-		glm::mat4 modelMat = glm::scale(glm::mat4(1), scale);
-		
-		modelMat = glm::translate(modelMat, position);
-		
-		modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
-		modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
-		modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
+		glm::mat4 modelMat = glm::translate(position) * glm::mat4(glm::quat(glm::radians(rotation))) * glm::scale(scale);
 
 		glm::mat4 mvpMat = vpMatrix * modelMat;
 
@@ -56,7 +54,7 @@ void Mesh::LoadFromFile(const char* filePath)
 {
 	Assimp::Importer mesh_importer;
 
-	const aiScene* scene = mesh_importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_ConvertToLeftHanded);
+	const aiScene* scene = mesh_importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace);
 
 	if (!scene) return;
 
@@ -93,6 +91,16 @@ void Mesh::LoadFromFile(const char* filePath)
 				if (meshPointer->mTextureCoords[0] != NULL) {
 					vert.uv.x = meshPointer->mTextureCoords[0][index].x;
 					vert.uv.y = meshPointer->mTextureCoords[0][index].y;
+				}
+
+				if (meshPointer->HasTangentsAndBitangents()) {
+					vert.tangent.x = meshPointer->mTangents[index].x;
+					vert.tangent.y = meshPointer->mTangents[index].y;
+					vert.tangent.z = meshPointer->mTangents[index].z;
+					
+					vert.bitangent.x = meshPointer->mBitangents[index].x;
+					vert.bitangent.y = meshPointer->mBitangents[index].y;
+					vert.bitangent.z = meshPointer->mBitangents[index].y;
 				}
 
 				vertices.push_back(vert);

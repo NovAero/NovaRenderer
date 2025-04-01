@@ -14,11 +14,7 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_windowHeight = windowHeight;
 
     //Asset loading
-    testShader = new ShaderProgram("BasicLitMaterial.frag", "BasicLitMaterial.vert");
-
-
-    Texture* tex = new Texture();
-    tex->LoadFromFile("soulspear_diffuse.tga");
+    basicUnlitShader = new ShaderProgram("simple.frag", "simple.vert");
 
     Material* mat = new Material("soulspear.mtl");
 
@@ -30,23 +26,23 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_camera = new Camera();
     glfwSetWindowUserPointer(window, m_camera);
 
-    m_camera->position = glm::vec3(0,5,2);
+    m_camera->position = glm::vec3(2,3,2);
     m_camera->pitch = glm::radians(-30.f);
 
-    lights.push_back(new DirLight(glm::vec4(0, -1, 0, 0.0), glm::vec3(1, 1, 1),
-                                glm::vec3(1, 1, 1), glm::vec3(1, 1, 1)));
+    lights.push_back(new DirLight(glm::vec4(0, -1, 0, 0), glm::vec3(0.1,0.1,1),
+                                glm::vec3(1,1,1), glm::vec3(1,1,1)));
 
-    lights.push_back(new PointLight(glm::vec4(0, 3,0, 1), glm::vec3(0.1, 0.5, 0.5),
+    lights.push_back(new PointLight(glm::vec4(0, 3, 0, 0.5), glm::vec3(0, 0.5, 0.2),
                                 glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1)));
 
-    /*lights.push_back(new PointLight(glm::vec4(0, 0, 1, 10), glm::vec3(0.5, 0.5, 0.5),
-                                glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1)));
+    lights.push_back(new PointLight(glm::vec4(0, 0, 0, 0.5), glm::vec3(0, 0.5, 0.2),
+                                glm::vec3(1, 0, 0), glm::vec3(1, 0, 0), glm::vec3(1, 0, 0)));
 
-    lights.push_back(new PointLight(glm::vec4(-1, 1, 0, 1), glm::vec3(0.5, 0.5, 0.5),
+    lights.push_back(new PointLight(glm::vec4(4, 3, 0, 0.5), glm::vec3(0, 0.5, 0.2),
                                 glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 0)));
 
-    lights.push_back(new PointLight(glm::vec4(0, 1, 1, 10), glm::vec3(0.5, 0.5, 0.5),
-                                glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1)));*/
+    lights.push_back(new PointLight(glm::vec4(4, 0, 0, 0.5), glm::vec3(0, 0.5, 0.2),
+                                glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1)));
 
     //Initalise mesh
     for (int i = 0; i < 3; ++i) {
@@ -55,23 +51,27 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
         meshes[i]->LoadFromFile("soulspear.obj");
 
         meshes[i]->m_shader = new ShaderProgram("BasicLitMaterial.frag", "BasicLitMaterial.vert");
-        meshes[i]->m_texture = tex;
         meshes[i]->m_material = mat;
         meshes[i]->position = glm::vec3(i + 1,0,0);
         meshes[i]->scale = glm::vec3(1);
         meshes[i]->lights = lights;
     }
 
-    Mesh* cube = new Mesh();
-    cube->LoadFromFile("box.obj");
-    cube->m_shader = testShader;
-    cube->m_material = mat;
-    cube->position = dynamic_cast<PointLight*>(lights[1])->GetPosition();
-    cube->scale = glm::vec3(1);
-    cube->lights = lights;
+    int j = 1;
 
-    meshes.push_back(cube);
+    for (int i = 0; i < 4; ++i) {
 
+        meshes.push_back(new Mesh());
+
+        meshes[3+i]->LoadFromFile("box.obj");
+        meshes[3+i]->m_shader = basicUnlitShader;
+        meshes[3+i]->position = dynamic_cast<PointLight*>(lights[j])->GetPosition();
+        meshes[3+i]->scale = glm::vec3(0.3);
+        meshes[3+i]->lights = lights;
+
+        j++;
+    }
+    
     return true;
 }
 
@@ -92,7 +92,7 @@ bool Application::Update()
 
 void Application::Draw()
 {
-    glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.25f, 0.25f, 0.25f, 1);
 
     glm::mat4 vpMat = m_camera->GetVPMatrix();
@@ -100,13 +100,14 @@ void Application::Draw()
     //Draw mesh
 
     for (int i = 0; i < 3; ++i) {
-        meshes[i]->rotation.y = sin(glfwGetTime());
+        meshes[i]->rotation.y = (i*10) * sin(glfwGetTime());
         meshes[i]->m_shader->Use();
         meshes[i]->Draw(vpMat, m_camera->position);
     }
-
-    meshes[3]->m_shader->Use();
-    meshes[3]->Draw(vpMat, m_camera->position);
+    for (int i = 0; i < 4; ++i) {
+        meshes[3+i]->m_shader->Use();
+        meshes[3+i]->Draw(vpMat, m_camera->position);
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -116,7 +117,7 @@ void Application::Exit()
 {
     Gizmos::destroy();
 
-    delete testShader;
+    delete basicUnlitShader;
     delete m_camera;
 
     glfwDestroyWindow(window);
