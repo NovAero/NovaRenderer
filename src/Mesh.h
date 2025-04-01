@@ -32,5 +32,5 @@ public:
 	Texture* m_texture = nullptr;
 	Material* m_material = nullptr;
 	ShaderProgram* m_shader = nullptr;
-	Light* lights;
+	std::vector<Light*> lights;
 };

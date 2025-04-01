@@ -45,7 +45,7 @@ public:
 protected:
 
 	std::vector<Mesh*> meshes;
-	Light* lights[4];
+	std::vector<Light*> lights;
 
 	Camera* m_camera;
 	ShaderProgram* testShader;

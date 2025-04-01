@@ -3,6 +3,7 @@
 #include "MeshSegment.h"
 #include "Material.h"
 #include "ShaderProgram.h"
+#include "Light.h"
 
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
@@ -21,23 +22,29 @@ Mesh::~Mesh()
 void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
 {
 	for (MeshSegment* segment : m_segments) {
-		m_texture->Bind("albedoMap",m_shader);
-		//m_material->Apply(m_shader);
+		if (m_texture) {
+			m_texture->Bind("albedoMap", m_shader);
+		}
+		if (m_material) {
+			m_material->Apply(m_shader);
+		}
 
 		glm::mat4 modelMat = glm::scale(glm::mat4(1), scale);
+		
+		modelMat = glm::translate(modelMat, position);
+		
 		modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
 		modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
 		modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
-
-		modelMat = glm::translate(modelMat, position);
 
 		glm::mat4 mvpMat = vpMatrix * modelMat;
 
 		m_shader->BindUniform("mvpMat", mvpMat);
 		m_shader->BindUniform("modelMat", modelMat);
+		m_shader->BindUniform("viewPos", cameraPos);
 
-		m_shader->BindUniform("ambientColour", glm::vec4(0,0.2,0,1));
-		m_shader->BindUniform("numLights", 2);
+		m_shader->BindPointLightArray(lights);
+		m_shader->BindDirectionalLight(dynamic_cast<DirLight*>(lights[0]));
 
 		segment->Bind();
 		segment->Draw();
@@ -83,8 +90,10 @@ void Mesh::LoadFromFile(const char* filePath)
 					vert.normal.z = meshPointer->mNormals[index].z;
 				}
 
-				vert.uv.x = meshPointer->mTextureCoords[0][index].x;
-				vert.uv.y = meshPointer->mTextureCoords[0][index].y;
+				if (meshPointer->mTextureCoords[0] != NULL) {
+					vert.uv.x = meshPointer->mTextureCoords[0][index].x;
+					vert.uv.y = meshPointer->mTextureCoords[0][index].y;
+				}
 
 				vertices.push_back(vert);
 			}

@@ -1,6 +1,7 @@
 #include "ShaderProgram.h"
 #include "Utilities.h"
 #include <iostream>
+#include <sstream>
 #include "Light.h"
 
 ShaderProgram::ShaderProgram(std::string fragFilePath, std::string vertFilePath)
@@ -136,4 +137,50 @@ void ShaderProgram::BindUniform(std::string name, const glm::mat4& value)
 {
 	GLint varLoc = glGetUniformLocation(shaderProgram, name.c_str());
 	glUniformMatrix4fv(varLoc, 1, false, &value[0][0]);
+}
+
+void ShaderProgram::BindPointLightArray(std::vector<Light*> lights, int from)
+{
+	std::vector<PointLight*> pLights;
+
+	for (auto l : lights) {
+		auto temp = dynamic_cast<PointLight*>(l);
+		if (temp) {
+			pLights.push_back(temp);
+		}
+	}
+
+	for (int i = from; i < pLights.size(); ++i) {
+		BindPointLight(*pLights[i], i);
+	}
+}
+
+void ShaderProgram::BindPointLight(const PointLight& light, int index)
+{	
+	std::string indexString;
+
+	std::stringstream ss;
+
+	ss << "pntLights[";
+	ss << index;
+	ss << "]";
+
+	ss >> indexString;
+
+	BindUniform(std::string(indexString + ".position"), light.GetPosition());
+
+	BindUniform(std::string(indexString + ".conLinQuad"), light.GetCoLinQuad());
+
+	BindUniform(std::string(indexString + ".ambient"), light.GetAmbient());
+	BindUniform(std::string(indexString + ".diffuse"), light.GetDiffuse());
+	BindUniform(std::string(indexString + ".specular"), light.GetSpecular());
+}
+
+void ShaderProgram::BindDirectionalLight(DirLight* light)
+{
+	BindUniform("dirLight.lightVec", glm::vec4(light->GetDirection(), light->GetLuminance()));
+
+	BindUniform("dirLight.ambient", light->GetAmbient());
+	BindUniform("dirLight.diffuse", light->GetDiffuse());
+	BindUniform("dirLight.specular", light->GetSpecular());
 }

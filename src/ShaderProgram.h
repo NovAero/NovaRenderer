@@ -5,6 +5,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+class PointLight;
+class DirLight;
 class Light;
 
 class ShaderProgram {
@@ -26,6 +28,10 @@ public:
 	void BindUniform(std::string name, const glm::vec4& value);
 	void BindUniform(std::string name, const glm::mat3& value);
 	void BindUniform(std::string name, const glm::mat4& value);
+
+	void BindPointLightArray(std::vector<Light*> lights, int from = 0);
+	void BindPointLight(const PointLight& light, int index);
+	void BindDirectionalLight(DirLight* light);
 
 private:
 	GLuint shaderProgram = 0;

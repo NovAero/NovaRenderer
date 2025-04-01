@@ -25,19 +25,28 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     //Set up rendering state
     glEnable(GL_DEPTH_TEST); // enables the depth buffer
     glClearColor(0.1f, 0.25f, 0.25f, 1);
-    testShader->Use();
 
     //Scene stuff , callbacks, camera pos, etc
     m_camera = new Camera();
     glfwSetWindowUserPointer(window, m_camera);
 
-    m_camera->position = glm::vec3(0,2,2);
+    m_camera->position = glm::vec3(0,5,2);
     m_camera->pitch = glm::radians(-30.f);
 
-    lights[0] = new Light(glm::vec3(1, 0, 0), 30.f, glm::vec4(1, 1, 1, 1));
-    lights[1] = new Light(glm::vec3(0, 1, 0), 30.f, glm::vec4(1, 1, 1, 1));
-    LoadLighting();
-    BindLightsToShader(testShader);
+    lights.push_back(new DirLight(glm::vec4(0, -1, 0, 0.0), glm::vec3(1, 1, 1),
+                                glm::vec3(1, 1, 1), glm::vec3(1, 1, 1)));
+
+    lights.push_back(new PointLight(glm::vec4(0, 3,0, 1), glm::vec3(0.1, 0.5, 0.5),
+                                glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1)));
+
+    /*lights.push_back(new PointLight(glm::vec4(0, 0, 1, 10), glm::vec3(0.5, 0.5, 0.5),
+                                glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1)));
+
+    lights.push_back(new PointLight(glm::vec4(-1, 1, 0, 1), glm::vec3(0.5, 0.5, 0.5),
+                                glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 0)));
+
+    lights.push_back(new PointLight(glm::vec4(0, 1, 1, 10), glm::vec3(0.5, 0.5, 0.5),
+                                glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1)));*/
 
     //Initalise mesh
     for (int i = 0; i < 3; ++i) {
@@ -45,17 +54,23 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
         meshes.push_back(new Mesh());
         meshes[i]->LoadFromFile("soulspear.obj");
 
-        meshes[i]->m_shader = testShader;
+        meshes[i]->m_shader = new ShaderProgram("BasicLitMaterial.frag", "BasicLitMaterial.vert");
         meshes[i]->m_texture = tex;
         meshes[i]->m_material = mat;
-        meshes[i]->position = glm::vec3(i,0,0);
-        if (i == 0) {
-            meshes[i]->rotation = glm::vec3(lights[0]->GetLightVec().x, 0, 0);
-        }
-        meshes[i]->scale = glm::vec3(i + 1);
-        meshes[i]->lights = lights[0];
+        meshes[i]->position = glm::vec3(i + 1,0,0);
+        meshes[i]->scale = glm::vec3(1);
+        meshes[i]->lights = lights;
     }
 
+    Mesh* cube = new Mesh();
+    cube->LoadFromFile("box.obj");
+    cube->m_shader = testShader;
+    cube->m_material = mat;
+    cube->position = dynamic_cast<PointLight*>(lights[1])->GetPosition();
+    cube->scale = glm::vec3(1);
+    cube->lights = lights;
+
+    meshes.push_back(cube);
 
     return true;
 }
@@ -82,12 +97,16 @@ void Application::Draw()
 
     glm::mat4 vpMat = m_camera->GetVPMatrix();
 
-    testShader->Use();
     //Draw mesh
 
     for (int i = 0; i < 3; ++i) {
+        meshes[i]->rotation.y = sin(glfwGetTime());
+        meshes[i]->m_shader->Use();
         meshes[i]->Draw(vpMat, m_camera->position);
     }
+
+    meshes[3]->m_shader->Use();
+    meshes[3]->Draw(vpMat, m_camera->position);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -113,7 +132,7 @@ void Application::SetMousePosition(GLFWwindow* window, double x, double y)
 bool Application::GLFWStartup(unsigned int windowWidth, unsigned int windowHeight)
 {
     if (glfwInit() == false)
-        return false;
+        return false; 
     window = glfwCreateWindow(windowWidth, windowHeight, windowName.c_str(), nullptr, nullptr);
     if (window == nullptr) {
         glfwTerminate();

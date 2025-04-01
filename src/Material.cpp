@@ -75,8 +75,8 @@ void Material::LoadFromFile(std::string fileName)
 
 void Material::Apply(ShaderProgram* shader)
 {
-	shader->BindUniform("Ka", Ka);
-	shader->BindUniform("Kd", Kd);
-	shader->BindUniform("Ks", Ks);
-	shader->BindUniform("specularPower", specExpo);
+	shader->BindUniform("material.ambient", Ka);
+	shader->BindUniform("material.diffuse", Kd);
+	shader->BindUniform("material.specular", Ks);
+	shader->BindUniform("material.shininess", 20.f);
 }
