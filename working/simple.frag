@@ -1,17 +1,10 @@
 #version 460
 
-in vec3 normal; //world space hopefully
-in vec2 uvs;
+in vec3 fragPos;
 
 out vec4 FragColour;
 
-uniform vec3 lightDir;
-uniform float lightIntensity;
-uniform vec4 lightColour;
-uniform vec4 ambientColour;
-uniform sampler2D albedoMap;
-
 void main()
 {
-	FragColour = vec4(1);
+    FragColour = vec4(fragPos * 0.5, 1.0);
 }

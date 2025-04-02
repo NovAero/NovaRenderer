@@ -23,6 +23,7 @@
 Mesh::~Mesh()
 {
 	delete m_material;
+	delete m_shader;
 }
 
 void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
@@ -34,15 +35,16 @@ void Mesh::Draw(glm::mat4 vpMatrix, glm::vec3 cameraPos) const
 		}
 
 		glm::mat4 modelMat = glm::translate(position) * glm::mat4(glm::quat(glm::radians(rotation))) * glm::scale(scale);
-
 		glm::mat4 mvpMat = vpMatrix * modelMat;
 
 		m_shader->BindUniform("mvpMat", mvpMat);
 		m_shader->BindUniform("modelMat", modelMat);
 		m_shader->BindUniform("viewPos", cameraPos);
 
-		m_shader->BindPointLightArray(lights);
-		m_shader->BindDirectionalLight(dynamic_cast<DirLight*>(lights[0]));
+		if (!lights.empty()) {
+			m_shader->BindPointLightArray(lights);
+			m_shader->BindDirectionalLight(dynamic_cast<DirLight*>(lights[0]));
+		}
 
 		segment->Bind();
 		segment->Draw();
@@ -76,7 +78,7 @@ void Mesh::LoadFromFile(const char* filePath)
 				int index = meshPointer->mFaces[vx_ix].mIndices[vI];
 
 				//Read the vertex data and add to vertex buffer
-				Vertex vert;
+				Vertex vert = Vertex();
 
 				vert.position.x = meshPointer->mVertices[index].x;
 				vert.position.y = meshPointer->mVertices[index].y;

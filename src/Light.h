@@ -38,7 +38,7 @@ public:
 	void SetDirection(float x, float y, float z);
 	void SetLuminance(float luminance);
 
-	float GetLuminance();
+	float GetLuminance() const;
 	glm::vec3 GetDirection();
 
 private:

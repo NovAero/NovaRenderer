@@ -13,9 +13,6 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
     m_windowWidth = windowWidth;
     m_windowHeight = windowHeight;
 
-    //Asset loading
-    basicUnlitShader = new ShaderProgram("simple.frag", "simple.vert");
-
     Material* mat = new Material("soulspear.mtl");
 
     //Set up rendering state
@@ -31,16 +28,16 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
 
     lights.push_back(new DirLight(glm::vec4(0, -1, 0, 0), glm::vec3(0.1,0.1,1),
                                 glm::vec3(1,1,1), glm::vec3(1,1,1)));
-
+    //White
     lights.push_back(new PointLight(glm::vec4(0, 3, 0, 0.5), glm::vec3(0, 0.5, 0.2),
                                 glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1)));
-
+    //Red
     lights.push_back(new PointLight(glm::vec4(0, 0, 0, 0.5), glm::vec3(0, 0.5, 0.2),
                                 glm::vec3(1, 0, 0), glm::vec3(1, 0, 0), glm::vec3(1, 0, 0)));
-
+    //Green
     lights.push_back(new PointLight(glm::vec4(4, 3, 0, 0.5), glm::vec3(0, 0.5, 0.2),
                                 glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 0)));
-
+    //Blue
     lights.push_back(new PointLight(glm::vec4(4, 0, 0, 0.5), glm::vec3(0, 0.5, 0.2),
                                 glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1)));
 
@@ -57,18 +54,15 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
         meshes[i]->lights = lights;
     }
 
-    int j = 1;
-
-    for (int i = 0; i < 4; ++i) {
+    //Initialise light position placeholders
+    int j = 1; //light index offset
+    for (int i = 3; i < 7; ++i) {
 
         meshes.push_back(new Mesh());
-
-        meshes[3+i]->LoadFromFile("box.obj");
-        meshes[3+i]->m_shader = basicUnlitShader;
-        meshes[3+i]->position = dynamic_cast<PointLight*>(lights[j])->GetPosition();
-        meshes[3+i]->scale = glm::vec3(0.3);
-        meshes[3+i]->lights = lights;
-
+        meshes[i]->LoadFromFile("box.obj");
+        meshes[i]->m_shader = new ShaderProgram("simple.frag", "simple.vert");
+        meshes[i]->position = dynamic_cast<PointLight*>(lights[j])->GetPosition();
+        meshes[i]->scale = glm::vec3(0.3f);
         j++;
     }
     
@@ -78,7 +72,7 @@ bool Application::Initialise(unsigned int windowWidth, unsigned int windowHeight
 
 bool Application::Update()
 {
-    float time = glfwGetTime();
+    float time = (float)glfwGetTime();
     delta = time - prevDelta;
     prevDelta = time;
     
@@ -97,16 +91,14 @@ void Application::Draw()
 
     glm::mat4 vpMat = m_camera->GetVPMatrix();
 
-    //Draw mesh
-
+    //rotate spears
     for (int i = 0; i < 3; ++i) {
-        meshes[i]->rotation.y = (i*10) * sin(glfwGetTime());
+        meshes[i]->rotation.y = (float)(i*10.f) * (float)sin(glfwGetTime());
+    }
+    //Draw meshes
+    for (int i = 0; i < 7; ++i) {
         meshes[i]->m_shader->Use();
         meshes[i]->Draw(vpMat, m_camera->position);
-    }
-    for (int i = 0; i < 4; ++i) {
-        meshes[3+i]->m_shader->Use();
-        meshes[3+i]->Draw(vpMat, m_camera->position);
     }
 
     glfwSwapBuffers(window);
@@ -117,7 +109,6 @@ void Application::Exit()
 {
     Gizmos::destroy();
 
-    delete basicUnlitShader;
     delete m_camera;
 
     glfwDestroyWindow(window);

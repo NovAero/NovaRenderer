@@ -46,7 +46,7 @@ void DirLight::SetLuminance(float luminance)
 	m_dirNstr.w = luminance;
 }
 
-float DirLight::GetLuminance()
+float DirLight::GetLuminance() const
 {
 	return m_dirNstr.w;
 }
